@@ -34,7 +34,7 @@ public class BreakoutFacade {
 	}
 	
 	public Alpha createAlpha(Point center, int diameter, Vector speed) {
-		return null;
+		return new Alpha(new Circle(center,  diameter), speed);
 	}
 
 	/**
@@ -100,7 +100,7 @@ public class BreakoutFacade {
 	
 
 	public int getDiameter(Ball ball) {
-		return 100; //TODO
+		return ball.getLocation().getDiameter(); //TODO
 	}
 	
 	public int getDiameter(Alpha alpha) {

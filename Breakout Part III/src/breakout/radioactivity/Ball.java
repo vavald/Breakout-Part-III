@@ -1,17 +1,68 @@
 package breakout.radioactivity;
 
 import java.awt.Color;
+
+import breakout.BreakoutState;
 import breakout.utils.*;
+import logicalcollections.LogicalSet;
+
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Represents the state of a ball in the breakout game.
  * 
  * @invar | getLocation() != null
  * @invar | getVelocity() != null
+ * 
+ * Invariants to preserve consistency of bidirectional association;
+ * the linked alphas are themeselves linked with this ball
+ * @invar | getLinkedAlphas() != null
+ * @invar | getLinkedAlphas().stream().allMatch(a -> a.getLinkedBalls().contains(this)
+ * 		  | 	&& a != null)
  */
 public abstract class Ball {
-
+    int eCharge;
+    /**
+     * @invar | linkedAlphas != null
+     * @invar | linkedAlphas.stream().allMatch(a -> a.getLinkedBalls().contains(this)
+     * 		  | 	&& a != null)
+     * 
+     * @representationObject
+     * @peerObjects
+     */
+    HashSet<Alpha> linkedAlphas = new HashSet<>();
+    
+    /**
+     * @post | result != null
+     * 
+     * @creates | result
+     * @peerObjects
+     */
+    public Set<Alpha> getLinkedAlphas() {return Set.copyOf(linkedAlphas);}
+    
+    /**
+     * @pre | alpha != null
+     * @post | getLinkedAlphas().equals(LogicalSet.plus(old(getLinkedAlphas()), alpha))
+     * @post | alpha.getLinkedBalls().equals(LogicalSet.plus(old(alpha.getLinkedBalls()), this))
+     * 
+     * @mutates_properties | getLinkedAlphas(), alpha.getLinkedBalls()
+     */
+    
+    public void linkTo(Alpha alpha) {
+    	linkedAlphas.add(alpha);
+    	alpha.linkedBalls.add(this);
+    }
+    
+    public void unLink(Alpha alpha) {
+    	linkedAlphas.remove(alpha);
+    	alpha.linkedBalls.remove(this);
+    }
+    	
+    
+    
+    
 	protected Circle location;
 	protected Vector velocity;
 
@@ -20,8 +71,13 @@ public abstract class Ball {
 	 * 
 	 * @pre | location != null
 	 * @pre | velocity != null
+	 * 
+	 * @mutates | this
+	 * 
 	 * @post | getLocation().equals(location)
 	 * @post | getVelocity().equals(velocity)
+	 * 
+	 * @post | getLinkedAlphas().isEmpty()
 	 */
 	public Ball(Circle location, Vector velocity) {
 		this.location = location;
@@ -156,32 +212,33 @@ public abstract class Ball {
 		return cloneWithVelocity(getVelocity());
 	}
 	
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Ball other = (Ball) obj;
-		if (!getVelocity().equals(other.getVelocity()))
-			return false;
-		if (!getLocation().getCenter().equals(other.getLocation().getCenter()))
-			return false;
-		if (getLocation().getDiameter() != other.getLocation().getDiameter())
-			return false;
-		return true;
-	}
-	
-	/**
-	 * Careful: depends on mutable state of this object.
-	 * As a result, Balls must not be modified while they are used as key in a hash set or table. 
-	 * 
-	 * @inspects | this
-	 */
-	@Override
-	public int hashCode() {
-		return Objects.hash(location, velocity);
-	}	
+//Do not override equal methods in mutable classes when working with Set
+//	@Override
+//	public boolean equals(Object obj) {
+//		if (this == obj)
+//			return true;
+//		if (obj == null)
+//			return false;
+//		if (getClass() != obj.getClass())
+//			return false;
+//		Ball other = (Ball) obj;
+//		if (!getVelocity().equals(other.getVelocity()))
+//			return false;
+//		if (!getLocation().getCenter().equals(other.getLocation().getCenter()))
+//			return false;
+//		if (getLocation().getDiameter() != other.getLocation().getDiameter())
+//			return false;
+//		return true;
+//	}
+//	
+//	/**
+//	 * Careful: depends on mutable state of this object.
+//	 * As a result, Balls must not be modified while they are used as key in a hash set or table. 
+//	 * 
+//	 * @inspects | this
+//	 */
+//	@Override
+//	public int hashCode() {
+//		return Objects.hash(location, velocity);
+//	}	
 }

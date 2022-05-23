@@ -11,9 +11,15 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import breakout.radioactivity.*;
-import breakout.*;
-import breakout.utils.*;
+import breakout.BlockState;
+import breakout.BreakoutFacade;
+import breakout.BreakoutState;
+import breakout.PaddleState;
+import breakout.radioactivity.Alpha;
+import breakout.radioactivity.Ball;
+import breakout.utils.Point;
+import breakout.utils.Rect;
+import breakout.utils.Vector;
 
 @SuppressWarnings("serial")
 public class GameView extends JPanel {
@@ -92,19 +98,19 @@ public class GameView extends JPanel {
 
 			int curPaddleDir = 0;
 			if (leftKeyDown && !rightKeyDown) {
-				breakoutState.movePaddleLeft(elapsedTime);
+				facade.movePaddleLeft(breakoutState, elapsedTime);
 				curPaddleDir = -1;
 			}
 			if (!leftKeyDown && rightKeyDown) {
-				breakoutState.movePaddleRight(elapsedTime);
+				facade.movePaddleRight(breakoutState, elapsedTime);
 				curPaddleDir = 1;
 			}
-			breakoutState.tick(curPaddleDir, elapsedTime);
-			if (breakoutState.isDead()) {
+			facade.tick(breakoutState, curPaddleDir, elapsedTime);
+			if (facade.isDead(breakoutState)) {
 				JOptionPane.showMessageDialog(this, "Game over :-(");
 				System.exit(0);
 			}
-			if (breakoutState.isWon()) {
+			if (facade.isWon(breakoutState)) {
 				JOptionPane.showMessageDialog(this, "Gewonnen!");
 				System.exit(0);
 			}
@@ -115,7 +121,9 @@ public class GameView extends JPanel {
 
 	@Override
 	public Dimension getPreferredSize() {
-		Point size = toGUICoord(breakoutState.getBottomRight().plus(new Vector(200, 200)));
+		Point size = toGUICoord(
+				facade.getBottomRight(breakoutState).plus(new Vector(200, 200)));
+				//breakoutState.getBottomRight().plus(new Vector(200, 200)));
 		return new Dimension(size.getX(), size.getY());
 	}
 
@@ -133,12 +141,15 @@ public class GameView extends JPanel {
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
-		Point topRight = toGUICoord(breakoutState.getBottomRight());
+		Point botRight = toGUICoord(
+				facade.getBottomRight(breakoutState));
 		g.setColor(Color.black);
-		g.drawRect(0, 0, topRight.getX(), topRight.getY());
+		g.drawRect(0, 0, botRight.getX(), botRight.getY());
 
 		paintBlocks(g);
 		paintBalls(g);
+//		paintAlphas(g); //squished circles in principle.
+//		paintLinks(g);
 		paintPaddle(g);
 		
 		// domi: this fixes a visual latency bug on my system...
@@ -147,7 +158,7 @@ public class GameView extends JPanel {
 
 	private void paintPaddle(Graphics g) {
 		// paddle
-		PaddleState paddle = breakoutState.getPaddle();
+		PaddleState paddle = facade.getPaddle(breakoutState);
 		Rect loc = facade.getLocation(paddle);
 		Color c = facade.getColor(paddle);
 		Point tl = loc.getTopLeft();
@@ -174,13 +185,45 @@ public class GameView extends JPanel {
 			paintBall(g, color, tl, br);
 		}
 	}
-
+	
 	private void paintBall(Graphics g, Color color, Point tlg, Point brg) {
 		g.setColor(color);
 		Point tl = toGUICoord(tlg);
 		Point br = toGUICoord(brg);
 		g.fillOval(tl.getX(), tl.getY(), br.getX() - tl.getX(), br.getY() - tl.getY());
 	}
+	/*
+	private void paintAlphas(Graphics g) {
+		for (Alpha alpha : facade.getAlphas(breakoutState)) {
+			Point center = facade.getCenter(alpha);
+			int diam = facade.getDiameter(alpha);
+			int radius = diam/2;
+			Point tl = center.plus(new Vector(-radius,-radius / 2)); //alphas are squished ovals for now
+			Color color = facade.getColor(alpha);
+			paintAlpha(g, color, tl, diam, radius);
+			
+		}
+	}
+	*/
+	
+	private void paintAlpha(Graphics g, Color color, Point tlg , int width, int height) {
+		g.setColor(color);
+		Point tl = toGUICoord(tlg);
+		g.fillOval(tl.getX(), tl.getY(), width/50 , height/50);
+	}
+	
+	private void paintLinks(Graphics g) {
+		for (Ball ball : facade.getBalls(breakoutState) ) { //deep copy
+			for (Alpha alpha : facade.getAlphas(ball)) { //shallow cop
+				Point start = toGUICoord(facade.getCenter(ball));
+				Point end = toGUICoord(facade.getCenter(alpha));
+				g.setColor(Color.red);
+				g.drawLine(start.getX(), start.getY(), end.getX(), end.getY());
+			}
+		}
+	}
+
+	
 
 	private void paintBlock(Graphics g, Point tlg, Point brg) {
 		Point tl = toGUICoord(tlg);
@@ -190,7 +233,7 @@ public class GameView extends JPanel {
 
 	private void paintBlocks(Graphics g) {
 		// blocks
-		for (BlockState block : breakoutState.getBlocks()) {
+		for (BlockState block : facade.getBlocks(breakoutState)) {
 			g.setColor(facade.getColor(block));
 			Rect loc = facade.getLocation(block);
 			Point tl = loc.getTopLeft();
