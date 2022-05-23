@@ -1,0 +1,139 @@
+* Iteration 3: radioactivity
+The deadline for iteration 3 is May 27th at 15:30.
+
+For iteration 3, you are allowed to start from the model solution of the second iteration (will be available shortly) or from your own solution. You are even allowed to mix and match code from both (at your own responsibility, of course).
+The project template can be found [[https://gitlab.kuleuven.be/u0145446/ogp-project-2021-2022-iteratie-3][here]].
+Note that it contains (almost) empty versions of classes like BreakoutState, PaddleState etc., but you may start by repopulating them from the model solution or your own solution of iteration 2.
+Additionally, the assignment (i.e.\ this text) is available online [[https://gitlab.kuleuven.be/u0145446/ogp-project-2021-2022-iteratie-3/-/blob/main/README.org][here]].
+Although we strive to keep any changes to the assignment to a minimum, it is possible that we will publish changes or corrections on this git repository.
+You are required to regularly check the repository for updates until the deadline.
+** Updates
+- A missing ~@Nested~ annotation was added to a nested class of the submission test suite (called ~SubmissionTestSuiteIter2Bis~). This enables a test that was mistakenly disabled.
+- The assignment specifies that no ~equals~ method should be written for balls/alphas. This applies to ~hashCode~ as well!
+- --------
+- */!\* Contrary to what was stated in the assignment, we now ask that the classes you submit reside in subpackages of ~breakout~. Concretely, the two ~radioactivity~ and ~utils~ packages must be renamed (*using Eclipse*) to ~breakout.radioactivity, breakout.utils~. In Eclipse right-click on ~radioactivity~ or ~utils~ then ~Refactor > Rename~ and simply add ~breakout.~ in front of the package at hand. This should update the references to those packages throughout the entire project.
+- We do not ask that you write a postcondition in ~BreakoutState~ constructor(s) checking that the objects in arrays ~BreakoutState.getBalls(), BreakoutState.getAlphas()~ are "deeply equal" to the objects in the input ~balls, alphas~ arrays. It is sufficient to write a postcondition stating that the objects of ~BreakoutState.getBalls()~ on one side, and input ~balls~ on the other, appear in the same order and have the same immutable fields (position, speed, eCharge). The same goes for alphas. Note: you don't have to write that "deep checking" postcondition but of course your code should behave as such, and we have private tests probing this.
+- If you write an ~equalContent~ that consider peers, it is OK for the specification to not consider peers (cf similar update above).
+- As shown in the base sources of iteration 3, the speed of the paddle has been doubled compared to iteration 2. ~BreakoutState~ sets ~PADDLE_VEL = new Vector(20, 0)~.
+- --------
+- There was a bug in the published model solution for iteration 2, that appears in the DEMO below as well. When a ball bounces on a replicator paddle, 3 new balls (*not 2*) should be emitted. For iteration 3 we also expect *3 new balls*. (Note: in iteration 3, an additional linked alpha particle is emitted).
+- --------
+- Minor correction in ~BreakoutFacade.createReplicatingPaddleState~ type signature.
+- A bug in ~Vector.magnetSpeed~ has been fixed.
+- The submission test suite for iter3 has been updated with tests coming from iter2 + another test.
+- The code snippet in this assignment has been updated.
+- Please use Set's of balls/alpha for ~linkedBalls, linkedAlphas~.
+- Alphas should have the same size as balls (diameter of 700).
+- When an alpha bounces on a wall/paddle its speed should be modified as if it was a ball.
+- Some point repartition idea has been added to the end of this document.
+- Please use the ~BreakoutState.tick~ order specified in this assignment.
+** Overview
+The goal of iteration 3 is to extend iteration 2 with a certain multi-class entity-relationship abstraction.
+This relationship connects two kinds of (mutable) entities: balls on the one hand, and "alpha particles" on the other.
+At any time, each ball can be linked to 0 or more alpha particles.
+Besides, balls now have an extra property called electric charge (an integer != 0). Correspondingly, each alpha particle also has a position and speed vector, can be linked to 0 or more balls and is always considered to have charge +1. Alpha particles and balls have a diameter of 700 (even though alphas are drawn as ovals).
+If a ball and an alpha particle are linked, a red line is drawn between them.
+
+When a ball ~b~ hits the paddle, a *radioactivity* effect occurs: a new alpha particle ~a~, linked to the ball ~b~ gets emitted by the paddle.
+The newly created alpha ~a~ has its speed equal to the updated speed of ~b~ + (-2,-2).
+Only 1 alpha particle gets emitted, even if the paddle is a replicator paddle.
+When a ball is below the bottom edge of the field, it is unlinked from all of its linked alpha particles, before disappearing.
+
+Alpha particles bounce on walls and on the paddle but do not interact with blocks.
+When an alpha particle ~a~ bounces on something, its speed is modified as if it was a ball, and a special effect occurs.
+ - When it bounces on a wall, *magnetism* occurs: every ball ~b~ that is linked to ~a~ is either attracted towards ~a~ or repelled from ~a~.
+   The new speed vector of ~b~ depends on the charge of ~b~ (for consistency we provide a function ~Vector.magnetSpeed~ computing this new speed).
+ - When it bounces on the paddle, *anti-radioactivity* occurs: A new ball ~b~ linked to ~a~ gets emitted by the paddle.
+   The initial speed of the newly created ball ~b~ is equal to the updated speed of ~a~ plus (-2, -2) (like in the radioactivity effect).
+   Note that only 1 ball gets emitted, even if the paddle is a replicator paddle.
+   When an alpha is below the bottom edge of the field, it is unlinked from all of its linked balls, before disappearing.
+   
+
+Here is a [[https://www.youtube.com/watch?v=k_cH-CredTY][DEMO]]. /Side Note: [0:17] is a consequence of the top alpha particle bouncing on the wall at this moment./
+** Architecture
+*** 1) utils package
+Some utility classes have been moved to an ~utils~ package (Rect, Vector, ...).
+*** 2) radioactivity package
+In order to implement this multi-class abstraction, we put the ~Alpha~ and ~Ball~ classes in a new separate  ~radioactivity~ package and we add package-scoped fields (of type ~Set<Alpha>, Set<Ball>~) to refer to linked balls/linked alpha particles. In terms of simplified code:
+#+begin_src java
+public class Ball { //Ball still abstract but thats not the point of this snippet.
+    int eCharge;
+    /**
+     * @peerObjects
+     */
+    Set<Alpha> linkedAlphas;
+}
+public class Alpha {
+    /**
+     * @peerObjects
+     */
+    Set<Ball> linkedBalls;
+}
+#+end_src
+Let us explain the multi-class representation invariant that we ask you to express with FSC4J (using ~@invar~ clauses).
+Recall that enforcing this invariant consists of making sure that it holds when no constructor or methods of both classes is being executed.
+If you expressed the invariant correctly but somehow manage to obtain a peer group (a collection of alphas and balls) in an invalid state at run time, FSC4J will complain and raise an assertion error, granted that assertions are enabled.
+Note that in order to express the full invariant you will need to use phase invariants (cf book).
+- ~linkedAlphas, linkedBalls~ are never null. (They might be empty sets though)
+- No balls/alphas contained in ~linkedBalls, linkedAlphas~ are ~null~.
+- If a ball ~b~ points to an alpha ~a~ (i.e. ~a~ is in linkedAlphas), then ~a~ points to ~b~ as well. The converse holds too. We call this invariant "bidirectional association".
+- The electric charge ~eCharge~ of a ball is an integer (hence negative or positive), different than 0.
+- Let ~b~ be a ball with charge ~eCharge~. The sign of ~eCharge~ exclusively depends on the size of ~b.linkedAlphas~. If it is even, ~eCharge > 0~. If it is odd, ~eCharge < 0~.
+- Let ~b~ be a ball with charge ~eCharge~. The absolute value ~|eCharge|~ of the electric charge is computed as follows:
+  - if ~b.linkedAlphas~ is empty, then ~|eCharge| = 1~.
+  - otherwise, we ask ~|eCharge| = max_{a ∈ linkedAlphas} (a.linkedBalls.size())~.
+
+The clients of this multi-class abstraction should be able to create balls/alphas with no peers. They should also be able, for given ball ~b~ and alpha ~a~, to register/delete a link between ~b~ and ~a~ via the calls ~b.linkTo(a)~ and ~b.unLink(a)~.
+Note that the latter calls may trigger a recomputation of the electric charges of ~b~ itself, as well as all ~b' ∈ a.linkedBalls~, for the representation invariant to be preserved. If ~b' ≠ b~ and ~b' ∉ a.linkedBalls~ then the charge of b' needs not be recomputed. Moreover linking/unlinking twice should do nothing extra compared to doing it once.
+**** Encapsulation
+By definition, clients of a multi-class abstraction must have access to peer objects references. In our case this is achieved with the ~getBalls(), getAlphas()~ methods. Remember however to properly encapsulate the above-mentioned package-scoped arrays ~linkedAlphas~ and ~linkedBalls~: we do not want the client to mutate those arrays by, e.g. setting some elements to ~null~. This means that ~getBalls(), getAlphas()~ must yield a shallow copy of ~linkedBalls, linkedAlphas~: a fresh array with the actual peer object references.
+**** A note about electric charge
+We expect to find an ~eCharge~ field in the ~Ball~ class, and we expect to find a getter ~getEcharge()~ simply forwarding the value of this field.
+*** 3) The ~equals~ method and mutable classes.
+It is generally a [[https://docs.oracle.com/en/java/javase/16/docs/api/java.base/java/util/Set.html][good idea to not override]] the ~Object.equals~ method for a mutable class ~M~, especially when we plan to add instances of M to ~Set~'s (for example, in our case: ~linkedAlphas~ is a set containing alphas, and alphas can be mutated). 
+We therefore ask you to delete any ~equals~ method from ~Ball~ and ~Alpha~. You can instead use a custom ~equalContent~ method if needed.
+*** 4) The ~BreakoutState~ class.
+**** Invariants
+The BreakoutState class remains in the ~breakout~ package. It keeps track of the active balls and alphas via private arrays ~balls, alphas~. To help you obtain a correct implementation we ask you to express and enforce the following additional representation invariants for ~BreakoutState~:
+- ~balls, alphas~ are not null arrays.
+- No balls, alphas stored in ~balls, alphas~ are null.
+- ~alphas~ exhaustiveness: if an alpha is a peer of a ball ~b~ referenced in the ~balls~ array, then it must appear in the ~alphas~ array.
+- ~balls~ exhaustiveness: conversely, if a ball is a peer of an alpha ~a~ referenced in the ~alphas~ array, it must appear in the ~balls~ array.
+- There should be no duplicate references in ~alphas, balls~.
+- All referenced alphas and balls are within the boundaries of the game field.
+
+We also ask that the BreakoutState constructor(s) you implement perform defensive checks on their input.
+**** Encapsulation
+Remember to encapsulate ~balls~ and ~alphas~ properly. If a client of ~BreakoutState~ creates an instance ~s~ of ~BreakoutState~ with input ~balls~, mutating this input afterwards should not alter the state of ~s~. Dually, if a client of ~BreakoutState~ receives arrays of balls or alphas via ~BreakoutState.getBalls(), BreakoutState.getAlphas()~, mutating those output arrays (by mutating elements) should not alter the state of ~s~ either. /!\ Hence make sure that ~BreakoutState.getBalls(), BreakoutState.getAlphas()~ returns arrays with copied balls/alphas _as well as copied peers_.
+**** Global links
+The main goal of iteration 3 is to work with multi-class abstractions and understand how to keep peers in a valid state. A potentially easier implementation of this project might rely on storing the links between ~Alpha~ and ~Balls~ as a dictionary in ~BreakoutState~. You are not allowed to do that.
+**** Ticking
+~BeakoutState.tick~ should achieve the following actions, in order:
+- Move the balls and alphas according to their current speeds.
+- Bounce balls and alphas on walls (ie update the speed if necessary). The magnetism effect described above may occur and update some ball speed vectors.
+- Remove the balls and alphas that are out of bound. If a ball or alpha ~x~ disappears, ~x~ must be unlinked from all of its peers. Otherwise, the exhaustiveness invariants of BreakoutState may not hold after ~tick~ returns.
+- Bounce balls on blocks.
+- Bounce balls on paddle. If the paddle is a replicator paddle, new balls (with no peers) get emitted (as before). Moreover (regardless of the paddle state), balls that bounce on the paddle activate the radioactivity effect described above.
+- Bounce alphas on paddle. The anti-radioactivity effect may occur.
+
+As always, make sure that ~s.tick()~ preserves the validity of ~s~.
+** Facade
+We extended ~BreakoutFacade~ with new methods. We ask you to implement all the methods in ~BreakoutFacade~ (that do not already have an implementation). Your implementation of these methods should consist of very simple code that simply forwards the invocation to the relevant method in the other classes you've implemented. ~BreakoutFacade~ depends on both the ~breakout~ package and the ~radioactivity~ package (where ~Ball~ and ~Alpha~ reside).
+** What to submit
+You have to submit all classes of your implementation, all of which must reside in package ~breakout~ or ~radioactivity~.
+In addition to the methods specified above, you may add any additional methods you deem useful to any of these classes.
+You may also add additional classes or interfaces that you find useful.
+
+You must write complete formal documentation for all classes, methods and interfaces you add as part of this assignment.
+In particular, the ~Ball - Alpha~ multi class abstraction must be documented properly.
+Make sure to respect behavioral subtyping.
+
+We also expect you to write a test suite for all classes you add, which tests the expected behavior of your implementations.
+
+We expect you to monitor the discussion forum on Toledo, where clarifications or corrections of the project assignment may be communicated.
+
+Students doing the project alone do not have to implement the magnetism effect (the charge invariant for ~Ball~ has to be expressed and enforced though).
+
+Make sure your implementation passes the submission test suite provided in the repo of iteration 3.
+
+To obtain a score of 50% or 66% for iteration 3, your solution must compile without errors, pass a sufficiently high fraction of the submission test suite and of our own secret test suite. It must also comply with what is asked in this assignment to a certain extent. To obtain a score of 83% or 100%, your solution must pass all of the official test cases, a high fraction of our secret test suite, and entirely comply with the instructions given here.
