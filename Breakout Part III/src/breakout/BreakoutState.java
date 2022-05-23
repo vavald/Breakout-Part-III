@@ -1,7 +1,15 @@
 package breakout;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.stream.Stream;
+import java.util.Arrays;
+
 import breakout.utils.*;
 import breakout.radioactivity.*;
 
@@ -38,10 +46,11 @@ public class BreakoutState {
 	 */
 	private Ball[] balls;
 	/**
-	 * @invar | blocks != null
-	 * @invar | Arrays.stream(blocks).allMatch(b -> getFieldInternal().contains(b.getLocation()))
+	 * @invar | alphas !=null
+	 * @invar | Arrays.stream(alphas).allMatch(b -> getFieldInternal().contains(b.getLocation()))
 	 * @representationObject
 	 */
+	
 	private BlockState[] blocks;
 	/**
 	 * @invar | paddle != null
@@ -53,6 +62,10 @@ public class BreakoutState {
 	private final Rect rightWall;
 	private final Rect leftWall;
 	private final Rect[] walls;
+	/**
+	 * @representationObject
+	 */
+	private Alpha[] alphas= {};
 
 	/**
 	 * Construct a new BreakoutState with the given balls, blocks, paddle.
@@ -95,6 +108,7 @@ public class BreakoutState {
 		for(int i = 0; i < balls.length; ++i) {
 			this.balls[i] = balls[i].clone();
 		}
+		
 		this.blocks = blocks.clone();
 		this.paddle = paddle;
 
@@ -117,9 +131,32 @@ public class BreakoutState {
 			res[i] = balls[i].clone();
 		}
 		return res;
-//		return balls.clone();
 	}
-
+	/**
+	 * Function to retrieve all alphas currently in the game
+	 * @creates result
+	 */
+	public Alpha[] getAlphas() {
+		Alpha[] list = {};
+		for (int i = 0 ; i < balls.length ; ++i) {
+			Alpha[] linked = balls[i].getLinkedAlphas().toArray(new Alpha[balls[i].getLinkedAlphas().size()]);
+			list = concatenate(alphas,linked);
+		}	
+		return list.clone();
+		
+	}
+	/**
+	 * Function used to concatenate multiple arrays into one
+	 * @param arrays
+	 * @return
+	 */
+	public static Alpha[] concatenate(Alpha[] ...arrays)
+	{
+	    return Stream.of(arrays)
+	                    .flatMap(Stream::of)        
+	                    .toArray(Alpha[]::new);
+	}
+	
 	/**
 	 * Return the blocks of this BreakoutState.
 	 *
@@ -179,6 +216,7 @@ public class BreakoutState {
 	    b.move(loc.getCenter().minus(b.getLocation().getCenter()),0);
 	}
 	
+	
 	private Ball collideBallBlocks(Ball ball) {
 		for (BlockState block : blocks) {
 			if (ball.collidesWith(block.getLocation())) {
@@ -219,6 +257,7 @@ public class BreakoutState {
 	 */
 	public void tick(int paddleDir, int elapsedTime) {
 		stepBalls(elapsedTime);
+		stepAlphas(elapsedTime);
 		bounceBallsOnWalls();
 		removeDeadBalls();
 		bounceBallsOnBlocks();
@@ -234,10 +273,21 @@ public class BreakoutState {
 			}		
 		}
 	}
+	
 
 	private void collideBallPaddle(Ball ball, Vector paddleVel) {
 		if (ball.collidesWith(paddle.getLocation())) {
 			ball.hitPaddle(paddle.getLocation(),paddleVel);
+			
+			//Creation of Alpha particles !!!
+			Alpha[] new_alphas= new Alpha[alphas.length+1];
+			for (int i = 0; i < alphas.length; i++)
+	            new_alphas[i] = alphas[i];
+			Alpha new_alpha = new Alpha(ball.getLocation(),paddleVel.plus(new Vector(-2,-2)));
+			new_alphas[new_alphas.length-1]=new_alpha;
+			ball.linkTo(new_alpha);
+			this.alphas=new_alphas;
+			
 			int nrBalls = paddle.numberOfBallsAfterHit();
 			if(nrBalls > 1) {
 				Ball[] curballs = balls;
@@ -289,6 +339,13 @@ public class BreakoutState {
 			balls[i].move(balls[i].getVelocity().scaled(elapsedTime), elapsedTime);
 		}
 	}
+	
+	private void stepAlphas(int elapsedTime) {
+		for(int i = 0; i < alphas.length; ++i) {
+			alphas[i].move(alphas[i].getVelocity().scaled(elapsedTime), elapsedTime);
+		}
+	}
+	
 	/**
 	 * Move the paddle right.
 	 * 
@@ -328,4 +385,6 @@ public class BreakoutState {
 	public boolean isDead() {
 		return getBalls().length == 0;
 	}
+
+
 }

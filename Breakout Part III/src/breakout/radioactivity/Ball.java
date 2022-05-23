@@ -2,12 +2,9 @@ package breakout.radioactivity;
 
 import java.awt.Color;
 
-import breakout.BreakoutState;
 import breakout.utils.*;
-import logicalcollections.LogicalSet;
 
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -40,7 +37,9 @@ public abstract class Ball {
      * @creates | result
      * @peerObjects
      */
-    public Set<Alpha> getLinkedAlphas() {return Set.copyOf(linkedAlphas);}
+    public Set<Alpha> getLinkedAlphas() {
+    	//System.out.print(Set.copyOf(linkedAlphas));//not empty, but GetAlphas from facade always empty ??!!
+    	return Set.copyOf(linkedAlphas);}
     
     /**
      * @pre | alpha != null
@@ -68,8 +67,6 @@ public abstract class Ball {
     	alpha.linkedBalls.remove(this);
     }
     	
-    
-    
     
 	protected Circle location;
 	protected Vector velocity;
@@ -104,6 +101,27 @@ public abstract class Ball {
 	 */
 	public Vector getVelocity() {
 		return velocity;
+	}
+	
+	/**
+	 * Return the echarge
+	 */
+	public int getEcharge() {
+		return eCharge;
+	}
+
+	/**
+	 * @param location the location to set
+	 */
+	public void setLocation(Circle location) {
+		this.location = location;
+	}
+
+	/**
+	 * @param velocity the velocity to set
+	 */
+	public void setVelocity(Vector velocity) {
+		this.velocity = velocity;
 	}
 
 	/**

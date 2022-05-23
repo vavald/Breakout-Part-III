@@ -27,8 +27,6 @@ public class BreakoutFacade {
 	}
 	
 	
-	
-	
 	public Ball createSuperchargedBall(Point center, int diameter, Vector initBallVelocity, int lifetime) {
 		return new SuperChargedBall(new Circle(center,  diameter), initBallVelocity, lifetime);
 	}
@@ -83,7 +81,7 @@ public class BreakoutFacade {
 	}
 	
 	public Color getColor(Alpha alpha) {
-		return null;
+		return alpha.getColor();
 	}
 
 	public Rect getLocation(PaddleState paddle) {
@@ -95,24 +93,29 @@ public class BreakoutFacade {
 	}
 	
 	public Point getCenter(Alpha alpha) {
-		return null;
+		return alpha.getCenter();
 	}
 	
 
 	public int getDiameter(Ball ball) {
-		return ball.getLocation().getDiameter(); //TODO
+		return ball.getLocation().getDiameter(); 
 	}
 	
 	public int getDiameter(Alpha alpha) {
-		return 0; //TODO
+		return alpha.getLocation().getDiameter(); 
 	}
 
 	public Ball[] getBalls(BreakoutState breakoutState) {
 		return breakoutState.getBalls();
 	}
-	
+	/**
+	 * 
+	 * @param breakoutState
+	 * @return
+	 */
 	public Alpha[] getAlphas(BreakoutState breakoutState) {
-		return null;
+		//System.out.print(breakoutState.getAlphas()+"end");
+		return breakoutState.getAlphas();
 	}
 
 	public Color getColor(BlockState block) {
@@ -129,54 +132,58 @@ public class BreakoutFacade {
 	 * the peer references.)
 	 */
 	public Set<Ball> getBalls(Alpha alpha) {
-		return null;
+		return alpha.getLinkedBalls();
 	}
 	
 	public Set<Alpha> getAlphas(Ball ball) {
-		return null;
+		for(Alpha alpha:ball.getLinkedAlphas()) {
+			System.out.print(alpha);
+		}
+		System.out.print(ball.getLinkedAlphas());
+		return ball.getLinkedAlphas(); //always empty !!!
 	}
 	
 	/**
 	 * note: re-adding a link does nothing
 	 */
 	public void addLink(Ball ball, Alpha alpha) {
-
+		ball.linkTo(alpha);
 	}
 	
 	/**
 	 * note: re-removing a link does nothing.
 	 */
 	public void removeLink(Ball ball, Alpha alpha) {
-
+		ball.unLink(alpha);
 	}
 	
 	/**
 	 * should be in constant time (forwarding private charge)
 	 */
 	public int getEcharge(Ball ball) {
-		return 0; //TODO
+		return ball.getEcharge(); 
 	}
 	
 	/**
 	 * mutates the position and diam of ball
 	 */
 	public void setLocation(Ball ball, Point center, int diam) {
-
+		ball.setLocation(new Circle(center, diam));
 	}
 	
 	public void setLocation(Alpha alpha, Point center, int diam) {
-
+		alpha.setLocation(new Circle(center, diam));
 	}
 
 	/**
 	 * mutates the velocity of ball
 	 */
 	public void setSpeed(Ball ball, Vector speed) {
-
+		ball.setVelocity(speed);
 	}
 	
 	public void setSpeed(Alpha alpha, Vector speed) {
-
+		alpha.setVelocity(speed);
 	}
 	
 
@@ -185,14 +192,13 @@ public class BreakoutFacade {
 	}
 	
 	public Vector getVelocity(Alpha alpha) {
-		return null;
+		return alpha.getVelocity();
 	}
 	
 	public void hitBlock(Ball ball, Rect rect, boolean destroyed) {
-
+		ball.hitBlock(rect, destroyed);
 	}
 	
-
 	
 	public BlockState[] getBlocks(BreakoutState state) {
 		return state.getBlocks();
@@ -220,11 +226,11 @@ public class BreakoutFacade {
 	}
 	
 	public boolean isWon(BreakoutState state) {
-		return state.isWon(); //TODO
+		return state.isWon(); 
 	}
 	
 	public boolean isDead(BreakoutState state) {
-		return state.isDead(); //TODO
+		return state.isDead(); 
 	}
 	
 	
@@ -280,14 +286,14 @@ public class BreakoutFacade {
 	 * 
 	 */
 	public boolean collidesWith(Ball ball, Rect rect) {
-		return true; //TODO
+		return ball.collidesWith(rect); 
 	}
 	
 	/*
 	 * 
 	 */
 	public boolean collidesWith(Alpha alpha, Rect rect) {
-		return true; //TODO
+		return alpha.collidesWith(rect); 
 	}
 	
 	

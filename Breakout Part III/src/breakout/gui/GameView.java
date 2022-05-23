@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.Set;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -45,6 +46,7 @@ public class GameView extends JPanel {
 		});
 		ballTimer.start();
 	}
+	
 
 	/**
 	 * Create a new GameView for playing breakout starting from a given
@@ -148,8 +150,8 @@ public class GameView extends JPanel {
 
 		paintBlocks(g);
 		paintBalls(g);
-//		paintAlphas(g); //squished circles in principle.
-//		paintLinks(g);
+		paintAlphas(g); //squished circles in principle.
+		paintLinks(g);
 		paintPaddle(g);
 		
 		// domi: this fixes a visual latency bug on my system...
@@ -192,7 +194,7 @@ public class GameView extends JPanel {
 		Point br = toGUICoord(brg);
 		g.fillOval(tl.getX(), tl.getY(), br.getX() - tl.getX(), br.getY() - tl.getY());
 	}
-	/*
+
 	private void paintAlphas(Graphics g) {
 		for (Alpha alpha : facade.getAlphas(breakoutState)) {
 			Point center = facade.getCenter(alpha);
@@ -204,7 +206,7 @@ public class GameView extends JPanel {
 			
 		}
 	}
-	*/
+	
 	
 	private void paintAlpha(Graphics g, Color color, Point tlg , int width, int height) {
 		g.setColor(color);
@@ -213,8 +215,8 @@ public class GameView extends JPanel {
 	}
 	
 	private void paintLinks(Graphics g) {
-		for (Ball ball : facade.getBalls(breakoutState) ) { //deep copy
-			for (Alpha alpha : facade.getAlphas(ball)) { //shallow cop
+		for (Ball ball : facade.getBalls(breakoutState) ) {//deep copy
+			for (Alpha alpha : facade.getAlphas(ball)) {//shallow cop
 				Point start = toGUICoord(facade.getCenter(ball));
 				Point end = toGUICoord(facade.getCenter(alpha));
 				g.setColor(Color.red);
