@@ -27,11 +27,20 @@ class LinksTest {
 		Alpha a3 = fac.createAlpha(defPoint, 700, downSpeed);
 		Alpha a4 = fac.createAlpha(defPoint, 700, downSpeed);
 		
+		//Link testing
 		b1.linkTo(a1);
 		b1.linkTo(a2);
 		assertEquals(b1.getLinkedAlphas().size(), 2);
 		assertTrue(a1.getLinkedBalls().contains(b1));
 		assertTrue(a2.getLinkedBalls().contains(b1));
+		
+		//unLink testing
+		b1.unLink(a2);
+		assertEquals(b1.getLinkedAlphas().size(), 1);
+		assertFalse(a2.getLinkedBalls().contains(b1));
+		
+		
+		
 	}
 
 }

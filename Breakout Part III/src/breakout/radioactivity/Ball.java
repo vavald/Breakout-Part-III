@@ -55,6 +55,14 @@ public abstract class Ball {
     	alpha.linkedBalls.add(this);
     }
     
+    /**
+     * @pre | alpha != null
+     * @post | getLinkedAlphas().equals(LogicalSet.minus(old(getLinkedAlphas()), alpha))
+     * @post | alpha.getLinkedBalls().equals(LogicalSet.minus(old(alpha.getLinkedBalls()), this))
+     * 
+     * @mutates_properties | getLinkedAlphas(), alpha.getLinkedBalls()
+     */
+    
     public void unLink(Alpha alpha) {
     	linkedAlphas.remove(alpha);
     	alpha.linkedBalls.remove(this);
