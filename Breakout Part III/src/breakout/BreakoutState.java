@@ -86,7 +86,7 @@ public class BreakoutState {
 	 * @post | getBottomRight().equals(bottomRight)
 	 * @post | getPaddle().equals(paddle)
 	 */
-	public BreakoutState(Ball[] balls, BlockState[] blocks, Point bottomRight, PaddleState paddle) {
+	public BreakoutState(Alpha[] alphas, Ball[] balls, BlockState[] blocks, Point bottomRight, PaddleState paddle) {
 		if (balls == null)
 			throw new IllegalArgumentException();
 		if (blocks == null)
@@ -111,6 +111,7 @@ public class BreakoutState {
 		for(int i = 0; i < balls.length; ++i) {
 			this.balls[i] = balls[i].clone();
 		}
+		this.alphas = alphas; 
 		
 		this.blocks = blocks.clone();
 		this.paddle = paddle;
@@ -139,15 +140,21 @@ public class BreakoutState {
 	 * @creates result
 	 */
 	public Alpha[] getAlphas() {
-		List<Alpha> alphas = Arrays.asList(balls).stream().flatMap(b -> 
-				b.getLinkedAlphas().stream()).collect(Collectors.toList());
-		Alpha[] res = new Alpha[alphas.size()];
-		int i = 0;
-		for (Alpha alpha : alphas) {
-			res[i] = (Alpha) alpha.clone();
-			i += 1;
+		if (balls.length==0) {
+			return alphas;
 		}
-		return res;
+		else {
+			List<Alpha> alphas = Arrays.asList(balls).stream().flatMap(b -> 
+			b.getLinkedAlphas().stream()).collect(Collectors.toList());										///////////////
+			Alpha[] res = new Alpha[alphas.size()];
+				int i = 0;
+				for (Alpha alpha : alphas) {
+					res[i] = (Alpha) alpha.clone();
+					i += 1;
+				}
+				return res;
+			}
+
 	}
 	
 	/**
