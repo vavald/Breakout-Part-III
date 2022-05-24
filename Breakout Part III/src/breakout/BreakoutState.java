@@ -148,12 +148,15 @@ public class BreakoutState {
 			i += 1;
 		}
 		return res;
-		
-
-		
+	}
+	
+	/**
+	 * @param alphas the alphas to set
+	 */
+	public void setAlphas(Alpha[] alphas) {
+		this.alphas = alphas;
 	}
 
-	
 	/**
 	 * Return the blocks of this BreakoutState.
 	 *
@@ -202,6 +205,15 @@ public class BreakoutState {
 			}
 		}
 	}
+	
+	private void bounceWalls(Alpha alpha) {
+		for (Rect wall : walls) {
+			if (alpha.collidesWith(wall)) {
+				alpha.hitWall(wall);
+			}
+		}
+	}
+	
 
 	private Ball removeDead(Ball ball) {
 		if( ball.getLocation().getBottommostPoint().getY() > bottomRight.getY()) { return null; }
@@ -256,6 +268,7 @@ public class BreakoutState {
 		stepBalls(elapsedTime);
 		stepAlphas(elapsedTime);
 		bounceBallsOnWalls();
+		bounceAlphasOnWalls();
 		removeDeadBalls();
 		bounceBallsOnBlocks();
 		bounceBallsOnPaddle(paddleDir);
@@ -328,6 +341,12 @@ public class BreakoutState {
 	private void bounceBallsOnWalls() {
 		for(int i = 0; i < balls.length; ++i) {
 			bounceWalls(balls[i]);
+		}
+	}
+	
+	private void bounceAlphasOnWalls() {
+		for(int i = 0; i < alphas.length; ++i) {
+			bounceWalls(alphas[i]);
 		}
 	}
 

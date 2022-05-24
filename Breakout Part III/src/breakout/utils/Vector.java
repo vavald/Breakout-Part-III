@@ -1,4 +1,5 @@
 package breakout.utils;
+
 /**
  * Represents a 2-dimensional integer vector.
  *
@@ -124,6 +125,15 @@ public class Vector {
 	public int getSquareLength() {
 		return this.product(this);
 	}
+	
+	/**
+	 * length /!\ double
+	 * 
+	 * //@post | result >= 0
+	 */
+	public double getLength() {
+		return Math.sqrt( getSquareLength() );
+	}
 
 	/**
 	 * Mirror this vector over a given normal vector and return the result.
@@ -148,4 +158,43 @@ public class Vector {
 	public Vector scaledDiv(int d) {
 		return new Vector(getX() / d, getY() / d);
 	}
+	
+	/**
+	 * 
+	 * returns new speed of the ball after magnetism occurs.
+	 */
+	public static Vector magnetSpeed(Point alphaPos, Point ballPos, int ballEcharge, Vector ballSpeed) {
+		Vector ballToAlpha = alphaPos.minus(ballPos);
+		double ballToAlphaLength = ballToAlpha.getLength();
+		double ballSpeedNLength = ballSpeed.getLength();
+		//increase ball speed by max 50%. eCharges > 4 act as eCharges == 4.
+		int chargeVal = Math.abs(ballEcharge);
+		if (chargeVal == 0) {throw new IllegalArgumentException();}
+		if (chargeVal == 2) {ballSpeedNLength = ballSpeedNLength * (1 + (0.166));}
+		if (chargeVal == 3) {ballSpeedNLength = ballSpeedNLength * (1 + (0.333));}
+		if (chargeVal >= 4) {ballSpeedNLength = ballSpeedNLength * (1 + (0.5));}
+		if (ballToAlphaLength > ballSpeedNLength &&  ballSpeedNLength  >= 0) {
+			double downFactor = ballSpeedNLength / ballToAlphaLength;
+			assert 0 < downFactor && downFactor < 1;
+			Vector res = ballToAlpha.floatScale(downFactor);
+			int chargeSign;
+			if (ballEcharge < 0) {chargeSign = -1;}
+			else {chargeSign = 1;}
+			res = res.scaled(- chargeSign); //either attracted or repelled by alpha
+			return res;
+		}
+		else return ballSpeed;
+	}
+	
+	public int floorCeil(double value) {
+        return (int) (value >= 0 ? Math.ceil(value) : Math.floor(value));
+	}
+   
+	public Vector floatScale(double factor) {
+	        return new Vector(floorCeil( x * factor ) , floorCeil( y * factor ));
+	}
+		
+//	public Vector floatScale(double factor) {
+//		return new Vector((int) Math.ceil( x * factor ) , (int) Math.ceil( y * factor ));
+//	}
 }

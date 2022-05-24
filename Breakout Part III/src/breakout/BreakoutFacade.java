@@ -52,7 +52,9 @@ public class BreakoutFacade {
 			BlockState[] blocks,
 			Point bottomRight,
 			PaddleState paddle) {
-		return null;
+		BreakoutState state = new BreakoutState(balls,blocks,bottomRight,paddle);
+		state.setAlphas(alphas);
+		return state;
 	}
 
 	public BlockState createNormalBlockState(Point topLeft, Point bottomRight) {

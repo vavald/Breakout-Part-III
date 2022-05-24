@@ -117,6 +117,32 @@ public class Alpha {
 		Vector coldir = rect.collideWith(getLocation());
 		return coldir != null && (getVelocity().product(coldir) > 0);
 	}
+	
+	/**
+	 * 
+	 * @param rect
+	 */
+	public void hitWall(Rect rect) {
+		velocity = bounceOn(rect);
+		for(Ball ball:this.getLinkedBalls()) {
+			Vector nspeed = Vector.magnetSpeed(this.getCenter(), ball.getCenter(), this.eCharge, ball.getVelocity());
+			ball.setVelocity(nspeed);
+		}
+	}
+	
+	/**
+	 * 
+	 * @param rect
+	 * @return
+	 */
+	public Vector bounceOn(Rect rect) {
+		Vector coldir = rect.collideWith(location);
+		if (coldir != null && velocity.product(coldir) > 0) {
+			return velocity.mirrorOver(coldir);
+		}
+		return null;
+	}
+	
 	/**
 	 * 
 	 * @param v
