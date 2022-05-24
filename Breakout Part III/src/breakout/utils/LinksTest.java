@@ -1,4 +1,4 @@
-package other;
+package breakout.utils;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -6,8 +6,6 @@ import org.junit.jupiter.api.Test;
 
 import breakout.BreakoutFacade;
 import breakout.radioactivity.*;
-import breakout.utils.Point;
-import breakout.utils.Vector;
 
 class LinksTest {
 	//Parameters to define balls & alphas

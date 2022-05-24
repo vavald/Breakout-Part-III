@@ -1,17 +1,16 @@
-package other;
+package breakout.utils;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 
 import java.awt.Color;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import breakout.utils.*;
+
 import breakout.radioactivity.*;
 import breakout.*;
 
-class NormalBlockStateTest {
+class ReplicatorBlockStateTest {
 	Point p11;
 	Point p05;
 	Point p38;
@@ -30,7 +29,7 @@ class NormalBlockStateTest {
 		pm14 = new Point(-1, 4);
 		r1138 = new Rect(p11, p38);
 		rm1438 = new Rect(pm14, p38);
-		b1 = new NormalBlockState(r1138);
+		b1 = new ReplicatorBlockState(r1138);
 	}
 
 	@Test
@@ -52,11 +51,12 @@ class NormalBlockStateTest {
 	@Test
 	void testPaddleStateAfterHit() {
 		PaddleState p = new NormalPaddleState(pm14); 
-		assertEquals(p, b1.paddleStateAfterHit(p));
+		assertEquals(ReplicatingPaddleState.class, b1.paddleStateAfterHit(p).getClass());
+		assertEquals(p.getCenter(), b1.paddleStateAfterHit(p).getCenter());
 	}
 
 	@Test
 	void testGetColor() {
-		assertEquals(new Color(0x80, 0x00, 0xff), b1.getColor());
+		assertEquals(new Color(0xcf, 0x5e, 0x51), b1.getColor());
 	}
 }

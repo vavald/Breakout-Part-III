@@ -1,4 +1,4 @@
-package other;
+package breakout.utils;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -6,7 +6,7 @@ import java.awt.Color;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import breakout.utils.*;
+
 import breakout.*;
 
 class ReplicatingPaddleStateTest {

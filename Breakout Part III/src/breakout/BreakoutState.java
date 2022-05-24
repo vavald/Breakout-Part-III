@@ -131,7 +131,7 @@ public class BreakoutState {
 	public Ball[] getBalls() {
 		Ball[] res = new Ball[balls.length];
 		for (int i = 0 ; i < balls.length ; ++i) {
-			res[i] = balls[i].clone();
+			res[i] = balls[i].cloneWithVelocity_and_alphas(balls[i].getVelocity(),balls[i].getLinkedAlphas());
 		}
 		return res; 
 	}
