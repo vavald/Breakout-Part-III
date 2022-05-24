@@ -42,7 +42,7 @@ RSSRR###RR
 """;
 	public static void main(String[] args) {
 		BreakoutFacade facade = new BreakoutFacade();
-		BreakoutState state = facade.createStateFromDescription(initMap3); //return to 2
+		BreakoutState state = facade.createStateFromDescription(initMap2); //return to 2
 //		BreakoutState state = GameMap.someAlphas();
 		EventQueue.invokeLater(() -> {
 			GameView mazeView = new GameView(state);

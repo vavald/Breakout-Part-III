@@ -327,12 +327,12 @@ public class BreakoutState {
 			alpha.hitPaddle(paddle.getLocation(),paddleVel);
 			//anti-radioactivity -> spwan ball linked to this alpha. Update balls field
 			Ball[] curballs = balls;
-			balls = new Ball[balls.length];
-			for(int i = 0; i < balls.length-2; ++i) {
+			balls = new Ball[balls.length+1];
+			for(int i = 0; i < balls.length-1; ++i) {
 				balls[i] = curballs[i];
 			}
 			//create ball with nspeed vector
-			Vector nspeed = Vector.magnetSpeed(alpha.getCenter(), alpha.getCenter(), alpha.getEcharge(), alpha.getVelocity());
+			Vector nspeed = alpha.getVelocity().plus(new Vector(-2, -2));			
 			Ball antiball = alpha.transformToBallWithVelocity(nspeed);
 			//link ball to alpha
 			antiball.linkTo(alpha);
