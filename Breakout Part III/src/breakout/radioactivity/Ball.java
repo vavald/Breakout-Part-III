@@ -244,13 +244,7 @@ public abstract class Ball {
 		return cloneWithVelocity_and_alphas(getVelocity(), getLinkedAlphas());
 	}
 	
-	public Set<Alpha> getAlphas() {
-		Set<Alpha> res = Collections.emptySet();
-		for (Alpha alpha : linkedAlphas) {
-			res.add(alpha.clone());
-		}
-		return res;
-	}
+}
 	
 //Do not override equal methods in mutable classes when working with Set
 //	@Override
@@ -281,4 +275,3 @@ public abstract class Ball {
 //	public int hashCode() {
 //		return Objects.hash(location, velocity);
 //	}	
-}

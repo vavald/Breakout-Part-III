@@ -248,7 +248,7 @@ public class BreakoutState {
 	 * Move all moving objects one step forward.
 	 * 
 	 * @mutates this
-	 * @mutates ...getBalls()
+	 * @mutates ...getBalls(), getAlphas()
 	 * @pre | elapsedTime >= 0
 	 * @pre | elapsedTime <= MAX_ELAPSED_TIME
 	 */
