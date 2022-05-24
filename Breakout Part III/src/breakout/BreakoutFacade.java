@@ -137,10 +137,10 @@ public class BreakoutFacade {
 	
 	public Set<Alpha> getAlphas(Ball ball) {
 		// If not empty, then return the balls links
-		if (!ball.getLinkedAlphas().isEmpty()) {
-			System.out.print(ball.getLinkedAlphas());
-		}
-		return ball.getLinkedAlphas(); //always empty !!!
+		//if (!ball.getLinkedAlphas().isEmpty()) {
+		//	System.out.print(ball.getLinkedAlphas());
+		//}
+		return ball.getLinkedAlphas(); 
 	}
 	
 	/**
