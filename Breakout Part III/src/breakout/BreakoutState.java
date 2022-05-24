@@ -272,6 +272,7 @@ public class BreakoutState {
 		removeDeadBalls();
 		bounceBallsOnBlocks();
 		bounceBallsOnPaddle(paddleDir);
+		bounceAlphasOnPaddle(paddleDir);
 		clampBalls();
 		balls = Arrays.stream(balls).filter(x -> x != null).toArray(Ball[]::new);
 	}
@@ -313,6 +314,25 @@ public class BreakoutState {
 			paddle = paddle.stateAfterHit();
 		}
 	}
+	
+	private void collideAlphaPaddle(Alpha alpha, Vector paddleVel) {
+		if (alpha.collidesWith(paddle.getLocation())) {
+			alpha.hitPaddle(paddle.getLocation(),paddleVel);
+			//anti-radioactivity -> spwan ball linked to this alpha. Update balls field
+			Ball[] curballs = balls;
+			balls = new Ball[balls.length];
+			for(int i = 0; i < balls.length-2; ++i) {
+				balls[i] = curballs[i];
+			}
+			//create ball with nspeed vector
+			Vector nspeed = Vector.magnetSpeed(alpha.getCenter(), alpha.getCenter(), alpha.getEcharge(), alpha.getVelocity());
+			Ball antiball = alpha.transformToBallWithVelocity(nspeed);
+			//link ball to alpha
+			antiball.linkTo(alpha);
+			balls[balls.length-1] = antiball;
+		}
+	}
+	
 
 	private void bounceBallsOnPaddle(int paddleDir) {
 		Vector paddleVel = PADDLE_VEL.scaled(paddleDir);
@@ -320,6 +340,15 @@ public class BreakoutState {
 		for(int i = 0; i < balls.length; ++i) {
 			if(balls[i] != null) {
 				collideBallPaddle(balls[i], paddleVel);
+			}
+		}
+	}
+	private void bounceAlphasOnPaddle(int paddleDir) {
+		Vector paddleVel = PADDLE_VEL.scaled(paddleDir);
+		Alpha[] alphas = this.alphas; 
+		for(int i = 0; i < alphas.length; ++i) {
+			if(alphas[i] != null) {
+				collideAlphaPaddle(alphas[i], paddleVel);
 			}
 		}
 	}

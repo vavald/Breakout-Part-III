@@ -23,7 +23,7 @@ import java.util.Set;
  * 		  | 	&& a != null)
  */
 public abstract class Ball {
-    int eCharge;
+    
     /**
      * @invar | linkedAlphas != null
      * @invar | linkedAlphas.stream().allMatch(a -> a.getLinkedBalls().contains(this)
@@ -70,7 +70,7 @@ public abstract class Ball {
     	alpha.linkedBalls.remove(this);
     }
     	
-    
+    protected int eCharge;
 	protected Circle location;
 	protected Vector velocity;
 

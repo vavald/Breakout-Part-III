@@ -106,11 +106,11 @@ public class Alpha {
 	}
 	
 	/**
-	 * Check whether this ball collides with a given `rect`.
+	 * Check whether this alpha collides with a given `rect`.
 	 * 
 	 * @pre | rect != null
-	 * @post | result == ((rect.collideWith(getLocation()) != null) &&
-	 *       |            (getVelocity().product(rect.collideWith(getLocation())) > 0))
+	 * @post | result == (rect.collideWith(getLocation()) != null &&
+	 * 		 | 			(getVelocity().product(rect.collideWith(getLocation())) > 0))
 	 * @inspects this
 	 */
 	public boolean collidesWith(Rect rect) {
@@ -119,21 +119,44 @@ public class Alpha {
 	}
 	
 	/**
+	 * Update the alpha after hitting a wall at a given location.
 	 * 
-	 * @param rect
+	 * @pre | rect != null
+	 * @pre | collidesWith(rect)
+	 * @post | getLocation().equals(old(getLocation()))
+	 * @mutates velocity of balls linked with this alpha
+	 * 		| getLinkedBalls()
 	 */
+	
+	/**
+	 * Update the BallState after hitting a paddle at a given location.
+	 * 
+	 * @pre | rect != null
+	 * @pre | collidesWith(rect)
+	 * @pre | paddleVel != null
+	 * @post | getLocation().equals(old(getLocation()))
+	 * @mutates this
+	 */
+	public void hitPaddle(Rect rect, Vector paddleVel) {
+		Vector nspeed = bounceOn(rect);
+		velocity = nspeed.plus(paddleVel.scaledDiv(5));
+	}
+	
+	
 	public void hitWall(Rect rect) {
 		velocity = bounceOn(rect);
-		for(Ball ball:this.getLinkedBalls()) {
+		for(Ball ball: getLinkedBalls()) {
 			Vector nspeed = Vector.magnetSpeed(this.getCenter(), ball.getCenter(), this.eCharge, ball.getVelocity());
 			ball.setVelocity(nspeed);
 		}
 	}
 	
 	/**
-	 * 
-	 * @param rect
-	 * @return
+	 * @pre | rect != null
+	 * @post | (rect.collideWith(getLocation()) == null && result == null) ||
+	 *       | (rect.collideWith(getLocation()) != null && getVelocity().product(rect.collideWith(getLocation())) <= 0 && result == null) ||
+	 *       | (rect.collideWith(getLocation()) != null && result.equals(getVelocity().mirrorOver(rect.collideWith(getLocation()))))
+	 * @inspects this
 	 */
 	public Vector bounceOn(Rect rect) {
 		Vector coldir = rect.collideWith(location);
@@ -169,6 +192,21 @@ public class Alpha {
 	}
 	
 	/**
+	 * Transforms this alpha into a ball with velocity and returns it
+	 * 
+	 * @inspects this
+	 * @creates result
+	 * @post | result.getLocation().equals(getLocation())
+	 * @post | result.getVelocity().equals(v)
+	 */
+	public Ball transformToBallWithVelocity(Vector v) {
+		return new NormalBall(getLocation(), v);
+	}
+	
+	
+	
+	
+	/**
 	 * Return a clone of this BallState.
 	 * 
 	 * @inspects this
@@ -179,6 +217,8 @@ public class Alpha {
 	public Alpha clone() {
 		return cloneWithVelocity(getVelocity());
 	}
+
+	
 	
 	
 
