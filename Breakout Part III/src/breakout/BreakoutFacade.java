@@ -6,7 +6,6 @@ import java.util.Set;
 
 import breakout.radioactivity.*;
 import breakout.utils.*;
-import breakout.*;
 
 //No documentation required for this class
 public class BreakoutFacade {
@@ -136,10 +135,10 @@ public class BreakoutFacade {
 	}
 	
 	public Set<Alpha> getAlphas(Ball ball) {
-		for(Alpha alpha:ball.getLinkedAlphas()) {
-			System.out.print(alpha);
+		// If not empty, then return the balls links
+		if (!ball.getLinkedAlphas().isEmpty()) {
+			System.out.print(ball.getLinkedAlphas());
 		}
-		System.out.print(ball.getLinkedAlphas());
 		return ball.getLinkedAlphas(); //always empty !!!
 	}
 	

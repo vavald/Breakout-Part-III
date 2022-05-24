@@ -130,6 +130,30 @@ public class Alpha {
 		return Color.white;
 	}
 	
+	/**
+	 * Return a clone of this alpha with the given velocity.
+	 * 
+	 * @inspects this
+	 * @creates result
+	 * @post | result.getLocation().equals(getLocation())
+	 * @post | result.getVelocity().equals(v)
+	 */
+	public Alpha cloneWithVelocity(Vector v) {
+		return new Alpha(getLocation(), v);
+	}
+	
+	/**
+	 * Return a clone of this BallState.
+	 * 
+	 * @inspects this
+	 * @creates result
+	 * @post | result.getLocation().equals(getLocation())
+	 * @post | result.getVelocity().equals(getVelocity())
+	 */
+	public Alpha clone() {
+		return cloneWithVelocity(getVelocity());
+	}
+	
 	
 
     

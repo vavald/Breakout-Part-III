@@ -1,6 +1,9 @@
 package breakout.radioactivity;
 
 import java.awt.Color;
+import java.util.Collections;
+import java.util.Set;
+
 //import java.util.Arrays;
 import breakout.utils.*;
 
@@ -62,8 +65,12 @@ public class SuperChargedBall extends NormalBall {
 	}
 
 	@Override
-	public Ball cloneWithVelocity(Vector v) {
-		return new SuperChargedBall(getLocation(), v, lifetime);
+	public Ball cloneWithVelocity_and_alphas(Vector v, Set<Alpha> alphas) {
+		Ball res = new SuperChargedBall(getLocation(), v, lifetime);
+		for (Alpha alpha: alphas) {
+			res.linkTo(alpha.clone());
+		}
+		return res;
 	}
 
 }

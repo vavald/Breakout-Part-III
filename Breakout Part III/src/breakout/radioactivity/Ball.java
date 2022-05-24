@@ -2,8 +2,11 @@ package breakout.radioactivity;
 
 import java.awt.Color;
 
+import breakout.BreakoutState;
 import breakout.utils.*;
+import logicalcollections.LogicalSet;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -224,7 +227,10 @@ public abstract class Ball {
 	 * @post | result.getLocation().equals(getLocation())
 	 * @post | result.getVelocity().equals(v)
 	 */
-	public abstract Ball cloneWithVelocity(Vector v);
+	
+	
+	
+	public abstract Ball cloneWithVelocity_and_alphas(Vector v, Set<Alpha> alphas);
 	
 	/**
 	 * Return a clone of this BallState.
@@ -235,7 +241,15 @@ public abstract class Ball {
 	 * @post | result.getVelocity().equals(getVelocity())
 	 */
 	public Ball clone() {
-		return cloneWithVelocity(getVelocity());
+		return cloneWithVelocity_and_alphas(getVelocity(), getLinkedAlphas());
+	}
+	
+	public Set<Alpha> getAlphas() {
+		Set<Alpha> res = Collections.emptySet();
+		for (Alpha alpha : linkedAlphas) {
+			res.add(alpha.clone());
+		}
+		return res;
 	}
 	
 //Do not override equal methods in mutable classes when working with Set

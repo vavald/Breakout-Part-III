@@ -1,6 +1,8 @@
 package breakout.radioactivity;
 
 import java.awt.Color;
+import java.util.Set;
+
 //import java.util.Arrays;
 import breakout.utils.*;
 
@@ -48,8 +50,17 @@ public class NormalBall extends Ball {
 	}
 
 	@Override
-	public Ball cloneWithVelocity(Vector v) {
-		return new NormalBall(getLocation(), v);
+	public Ball cloneWithVelocity_and_alphas(Vector v, Set<Alpha> alphas) {
+		Ball res = new NormalBall(getLocation(), v);
+		for (Alpha alpha: alphas) {
+			res.linkTo(alpha.clone());
+		}
+		return res;
 	}
+	
+//	@Override
+//	public Ball cloneWithVelocity(Vector v) {
+//		return new NormalBall(getLocation(), v);
+//	}
 
 }

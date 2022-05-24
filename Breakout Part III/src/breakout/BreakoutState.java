@@ -3,10 +3,13 @@ package breakout;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.Arrays;
 
@@ -123,39 +126,33 @@ public class BreakoutState {
 	 * Return the balls of this BreakoutState.
 	 *
 	 * @creates result
-     * @creates ...result
 	 */
 	public Ball[] getBalls() {
 		Ball[] res = new Ball[balls.length];
 		for (int i = 0 ; i < balls.length ; ++i) {
 			res[i] = balls[i].clone();
 		}
-		return res;
+		return res; 
 	}
 	/**
 	 * Function to retrieve all alphas currently in the game
 	 * @creates result
 	 */
 	public Alpha[] getAlphas() {
-		Alpha[] list = {};
-		for (int i = 0 ; i < balls.length ; ++i) {
-			Alpha[] linked = balls[i].getLinkedAlphas().toArray(new Alpha[balls[i].getLinkedAlphas().size()]);
-			list = concatenate(alphas,linked);
-		}	
-		return list.clone();
+		List<Alpha> alphas = Arrays.asList(balls).stream().flatMap(b -> 
+				b.getLinkedAlphas().stream()).collect(Collectors.toList());
+		Alpha[] res = new Alpha[alphas.size()];
+		int i = 0;
+		for (Alpha alpha : alphas) {
+			res[i] = (Alpha) alpha.clone();
+			i += 1;
+		}
+		return res;
+		
+
 		
 	}
-	/**
-	 * Function used to concatenate multiple arrays into one
-	 * @param arrays
-	 * @return
-	 */
-	public static Alpha[] concatenate(Alpha[] ...arrays)
-	{
-	    return Stream.of(arrays)
-	                    .flatMap(Stream::of)        
-	                    .toArray(Alpha[]::new);
-	}
+
 	
 	/**
 	 * Return the blocks of this BreakoutState.
@@ -297,7 +294,7 @@ public class BreakoutState {
 				}
 				for(int i = 1; i < nrBalls; ++i) {
 					Vector nballVel = ball.getVelocity().plus(BALL_VEL_VARIATIONS[i]);
-					balls[curballs.length + i -1] = ball.cloneWithVelocity(nballVel);					
+					balls[curballs.length + i -1] = ball.cloneWithVelocity_and_alphas(nballVel, Collections.emptySet());					
 				}
 			}
 			paddle = paddle.stateAfterHit();
