@@ -1,10 +1,12 @@
-package breakout;
+package breakout.utils;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import breakout.utils.*;
+
+import breakout.NormalPaddleState;
+import breakout.PaddleState;
 
 class PaddleTest {
 	Point p11;

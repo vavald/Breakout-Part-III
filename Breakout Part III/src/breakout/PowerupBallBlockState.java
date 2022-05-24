@@ -12,7 +12,11 @@ public class PowerupBallBlockState extends NormalBlockState {
 	public PowerupBallBlockState(Rect location) {
 		super(location);
 	}
-
+	
+	/**
+	 * 
+	 * @creates | result
+	 */
 	@Override
 	public Ball ballStateAfterHit(Ball ballState) {
 		SuperChargedBall new_ball = new SuperChargedBall(ballState.getLocation(), ballState.getVelocity(), SUPERCHARGED_BALL_LIFETIME);

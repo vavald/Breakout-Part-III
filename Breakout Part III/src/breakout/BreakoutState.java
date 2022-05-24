@@ -81,10 +81,19 @@ public class BreakoutState {
 	 * @throws IllegalArgumentException | !(new Rect(Point.ORIGIN,bottomRight)).contains(paddle.getLocation())
 	 * @throws IllegalArgumentException | !Arrays.stream(blocks).allMatch(b -> (new Rect(Point.ORIGIN,bottomRight)).contains(b.getLocation()))
 	 * @throws IllegalArgumentException | !Arrays.stream(balls).allMatch(b -> (new Rect(Point.ORIGIN,bottomRight)).contains(b.getLocation()))
-	 * @post | Arrays.equals(getBalls(),balls)
 	 * @post | Arrays.equals(getBlocks(),blocks)
 	 * @post | getBottomRight().equals(bottomRight)
 	 * @post | getPaddle().equals(paddle)
+	 * 
+	 * @post | Arrays.stream(balls).allMatch(b1 -> Arrays.stream(getBalls()).allMatch(b2 -> (b2.getVelocity() == b1.getVelocity())
+	 * 		 |													&&  (b2.getEcharge() == b1.getEcharge()) 
+	 * 		 |													&&  (b2.getLocation() == b1.getLocation())))
+	 * 
+	 * @post | Arrays.stream(alphas).allMatch(b1 -> Arrays.stream(getAlphas()).allMatch(b2 -> (b2.getVelocity() == b1.getVelocity())
+	 * 		 |													&&  (b2.getEcharge() == b1.getEcharge()) 
+	 * 		 |													&&  (b2.getLocation() == b1.getLocation())))
+	 * 
+	 * 
 	 */
 	public BreakoutState(Alpha[] alphas, Ball[] balls, BlockState[] blocks, Point bottomRight, PaddleState paddle) {
 		if (balls == null)
