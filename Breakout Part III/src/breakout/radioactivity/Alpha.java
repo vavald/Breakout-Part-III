@@ -146,8 +146,8 @@ public class Alpha {
 	public void hitWall(Rect rect) {
 		velocity = bounceOn(rect);
 		for(Ball ball: getLinkedBalls()) {
-			//Vector nspeed = Vector.magnetSpeed(this.getCenter(), ball.getCenter(), this.eCharge, ball.getVelocity());
-			//ball.setVelocity(nspeed);
+			Vector nspeed = Vector.magnetSpeed(this.getCenter(), ball.getCenter(), this.eCharge, ball.getVelocity());
+			ball.setVelocity(nspeed);
 		}
 	}
 	

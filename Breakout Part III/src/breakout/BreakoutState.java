@@ -145,7 +145,7 @@ public class BreakoutState {
 		}
 		else {
 			List<Alpha> alphas = Arrays.asList(balls).stream().flatMap(b -> 
-			b.getLinkedAlphas().stream()).collect(Collectors.toList());										///////////////
+			b.getLinkedAlphas().stream()).collect(Collectors.toList());									
 			Alpha[] res = new Alpha[alphas.size()];
 				int i = 0;
 				for (Alpha alpha : alphas) {
@@ -157,12 +157,6 @@ public class BreakoutState {
 
 	}
 	
-	/**
-	 * @param alphas the alphas to set
-	 */
-	public void setAlphas(Alpha[] alphas) {
-		this.alphas = alphas;
-	}
 
 	/**
 	 * Return the blocks of this BreakoutState.
@@ -226,10 +220,25 @@ public class BreakoutState {
 		if( ball.getLocation().getBottommostPoint().getY() > bottomRight.getY()) { return null; }
 		else { return ball; }
 	}
+	
+	private Alpha removeDead(Alpha alpha) {
+		if( alpha.getLocation().getBottommostPoint().getY() > bottomRight.getY()) { 
+			for(Ball ball:alpha.getLinkedBalls()) {
+				ball.unLink(alpha);
+			}
+			return null; 
+			}
+		else { return alpha; }
+	}
 
 	private void clampBall(Ball b) {
 		Circle loc = getFieldInternal().constrain(b.getLocation());
 	    b.move(loc.getCenter().minus(b.getLocation().getCenter()),0);
+	}
+	
+	private void clampAlpha(Alpha a) {
+		Circle loc = getFieldInternal().constrain(a.getLocation());
+	    a.move(loc.getCenter().minus(a.getLocation().getCenter()),0);
 	}
 	
 	
@@ -277,17 +286,28 @@ public class BreakoutState {
 		bounceBallsOnWalls();
 		bounceAlphasOnWalls();
 		removeDeadBalls();
+		removeDeadAlphas();
 		bounceBallsOnBlocks();
 		bounceBallsOnPaddle(paddleDir);
 		bounceAlphasOnPaddle(paddleDir);
 		clampBalls();
+		clampAlphas();
 		balls = Arrays.stream(balls).filter(x -> x != null).toArray(Ball[]::new);
+		alphas = Arrays.stream(alphas).filter(x -> x != null).toArray(Alpha[]::new);
 	}
 
 	private void clampBalls() {
 		for(int i = 0; i < balls.length; ++i) {
 			if(balls[i] != null) {
 				clampBall(balls[i]);
+			}		
+		}
+	}
+	
+	private void clampAlphas() {
+		for(int i = 0; i < alphas.length; ++i) {
+			if(alphas[i] != null) {
+				clampAlpha(alphas[i]);
 			}		
 		}
 	}
@@ -371,6 +391,12 @@ public class BreakoutState {
 	private void removeDeadBalls() {
 		for(int i = 0; i < balls.length; ++i) {
 			balls[i] = removeDead(balls[i]);
+		}
+	}
+	
+	private void removeDeadAlphas() {
+		for(int i = 0; i < alphas.length; ++i) {
+			alphas[i] = removeDead(alphas[i]);
 		}
 	}
 
