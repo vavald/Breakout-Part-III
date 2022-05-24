@@ -6,15 +6,26 @@ import breakout.BreakoutState;
 import breakout.utils.*;
 import logicalcollections.LogicalSet;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.lang.Math;
 
 /**
  * Represents the state of a ball in the breakout game.
  * 
  * @invar | getLocation() != null
  * @invar | getVelocity() != null
+ * 
+ * Invariants for echarge:
+ * Betrekking tot teken
+ * @invar | (getEcharge() < 0  && getLinkedAlphas().size() % 2 != 0)	||
+ * 		  |	(getEcharge() > 0 && getLinkedAlphas().size() % 2 == 0)
+ * Betrekking tot abs waarde
+ * @invar | Math.abs(getEcharge()) == getLinkedAlphas().stream().mapToInt(a -> a.getLinkedBalls().size()).max().getAsInt() ||
+ * 		  | 	(Math.abs(getEcharge()) == 1 && getLinkedAlphas().size() == 0)
+ * 
  * 
  * Invariants to preserve consistency of bidirectional association;
  * the linked alphas are themeselves linked with this ball
@@ -23,7 +34,7 @@ import java.util.Set;
  * 		  | 	&& a != null)
  */
 public abstract class Ball {
-    
+    //##
     /**
      * @invar | linkedAlphas != null
      * @invar | linkedAlphas.stream().allMatch(a -> a.getLinkedBalls().contains(this)
@@ -55,6 +66,8 @@ public abstract class Ball {
     public void linkTo(Alpha alpha) {
     	linkedAlphas.add(alpha);
     	alpha.linkedBalls.add(this);
+    	updateEcharge(); 
+    	updateEcharge(alpha);//##
     }
     
     /**
@@ -68,9 +81,21 @@ public abstract class Ball {
     public void unLink(Alpha alpha) {
     	linkedAlphas.remove(alpha);
     	alpha.linkedBalls.remove(this);
+    	updateEcharge();
+    	updateEcharge(alpha); //##
     }
-    	
-    protected int eCharge;
+    //###
+    /**
+     * Invariants for echarge:
+     * Betrekking tot teken
+     * @invar | (eCharge < 0  && getLinkedAlphas().size() % 2 != 0)	||
+     * 		  |	(eCharge > 0 && getLinkedAlphas().size() % 2 == 0)
+     * Betrekking tot abs waarde
+     * @invar | Math.abs(eCharge) == getLinkedAlphas().stream().mapToInt(a -> a.getLinkedBalls().size()).max().getAsInt() ||
+     * 		  | 		(Math.abs(eCharge) == 1 && getLinkedAlphas().size() == 0)
+     */
+    //###
+    protected int eCharge = 1;
 	protected Circle location;
 	protected Vector velocity;
 
@@ -88,8 +113,10 @@ public abstract class Ball {
 	 * @post | getLinkedAlphas().isEmpty()
 	 */
 	public Ball(Circle location, Vector velocity) {
+		updateEcharge();		//##
 		this.location = location;
 		this.velocity = velocity;
+		
 	}
 
 	/**
@@ -244,6 +271,37 @@ public abstract class Ball {
 		return cloneWithVelocity_and_alphas(getVelocity(), getLinkedAlphas());
 	}
 	
+	//###
+	/**
+	 * 
+	 * @mutates | this
+	 * 
+	 */
+	public void updateEcharge() {	//Wanneer? als linkTo() of unLink() wordt opgeroepen
+		// Waarde update
+		if (getLinkedAlphas().size() == 0) {eCharge = 1;}
+		
+		else {eCharge = getLinkedAlphas().stream().mapToInt(a -> a.getLinkedBalls().size()).max().getAsInt();}
+		// Teken update
+		if (getLinkedAlphas().size() % 2 == 0) {
+			eCharge = Math.abs(eCharge);
+		}
+		else {eCharge = - Math.abs(eCharge);}
+	}
+	
+	/**
+	 * 
+	 * @pre | alpha != null
+	 * @mutates_properties | alpha.getLinkedBalls()
+	 * 
+	 */
+	public void updateEcharge(Alpha alpha) {	
+		for (Ball ball: alpha.getLinkedBalls()) {
+			ball.updateEcharge();
+		}
+			
+	}
+	//###
 }
 	
 //Do not override equal methods in mutable classes when working with Set
