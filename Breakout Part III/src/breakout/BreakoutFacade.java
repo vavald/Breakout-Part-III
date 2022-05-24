@@ -39,7 +39,8 @@ public class BreakoutFacade {
 	 */
 	public BreakoutState createBreakoutState(Ball[] balls, BlockState[] blocks, Point topRight,
 			PaddleState paddle) {
-		return new BreakoutState(balls,blocks,topRight,paddle);
+			Alpha[] alphas = {};																				///////////////////
+		return new BreakoutState(alphas,balls,blocks,topRight,paddle);
 	}
 	
 	/**
@@ -48,13 +49,11 @@ public class BreakoutFacade {
 	 */
 	public BreakoutState createBreakoutState(
 			Alpha[] alphas,
-			Ball[] balls,
+			Ball[] balls,																									///////////////
 			BlockState[] blocks,
 			Point bottomRight,
 			PaddleState paddle) {
-		BreakoutState state = new BreakoutState(balls,blocks,bottomRight,paddle);
-		state.setAlphas(alphas);
-		return state;
+		return new BreakoutState(alphas,balls,blocks,bottomRight,paddle);
 	}
 
 	public BlockState createNormalBlockState(Point topLeft, Point bottomRight) {
