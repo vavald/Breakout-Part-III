@@ -221,8 +221,16 @@ public class Alpha {
 	 * @post | result.getLocation().equals(getLocation())
 	 * @post | result.getVelocity().equals(getVelocity())
 	 */
-	public Alpha clone() {
+	public Alpha shallowClone() {
 		return cloneWithVelocity(getVelocity());
+	}
+	
+	public Alpha deepClone() {
+		Alpha res = shallowClone();
+		for (Ball ball: getLinkedBalls()) {
+			ball.shallowClone().linkTo(res);
+		}
+		return res;
 	}
 
 	

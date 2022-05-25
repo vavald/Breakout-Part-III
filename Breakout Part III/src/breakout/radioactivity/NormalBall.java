@@ -50,11 +50,8 @@ public class NormalBall extends Ball {
 	}
 
 	@Override
-	public Ball cloneWithVelocity_and_alphas(Vector v, Set<Alpha> alphas) {
+	public Ball cloneWithVelocity(Vector v) {
 		Ball res = new NormalBall(getLocation(), v);
-		for (Alpha alpha: alphas) {
-			res.linkTo(alpha.clone());
-		}
 		return res;
 	}
 	

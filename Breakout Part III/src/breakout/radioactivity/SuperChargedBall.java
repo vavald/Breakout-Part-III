@@ -65,11 +65,8 @@ public class SuperChargedBall extends NormalBall {
 	}
 
 	@Override
-	public Ball cloneWithVelocity_and_alphas(Vector v, Set<Alpha> alphas) {
+	public Ball cloneWithVelocity(Vector v) {
 		Ball res = new SuperChargedBall(getLocation(), v, lifetime);
-		for (Alpha alpha: alphas) {
-			res.linkTo(alpha.clone());
-		}
 		return res;
 	}
 

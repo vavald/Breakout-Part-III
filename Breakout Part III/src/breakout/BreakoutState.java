@@ -130,7 +130,7 @@ public class BreakoutState {
 		// balls.clone() does a shallow copy by default
 		this.balls = new Ball[balls.length];
 		for(int i = 0; i < balls.length; ++i) {
-			this.balls[i] = balls[i].clone();
+			this.balls[i] = balls[i].deepClone();
 		}
 		this.alphas = alphas; 
 		
@@ -152,7 +152,7 @@ public class BreakoutState {
 	public Ball[] getBalls() {
 		Ball[] res = new Ball[balls.length];
 		for (int i = 0 ; i < balls.length ; ++i) {
-			res[i] = balls[i].clone();
+			res[i] = balls[i].deepClone();
 		}
 		return res; 
 	}
@@ -164,22 +164,29 @@ public class BreakoutState {
 	 * 
 	 */
 	public Alpha[] getAlphas() {
-		if (balls.length==0) {
-			return alphas.clone();		//Representation exposure !!
+		Alpha[] res = new Alpha[alphas.length];
+		for (int i = 0 ; i < alphas.length; ++i) {
+			res[i] = alphas[i].deepClone();
 		}
-		else {
-			List<Alpha> alphas = Arrays.asList(balls).stream().flatMap(b -> 
-			b.getLinkedAlphas().stream()).collect(Collectors.toList());									
-			Alpha[] res = new Alpha[alphas.size()];
-				int i = 0;
-				for (Alpha alpha : alphas) {
-					res[i] = alpha.clone();
-					i += 1;
-				}
-				return res;
-		}
-
+		return res; 
 	}
+
+//		if (balls.length==0) {
+//			return alphas.clone();		//Representation exposure !!
+//		}
+//		else {
+//			List<Alpha> alphas = Arrays.asList(balls).stream().flatMap(b -> 
+//			b.getLinkedAlphas().stream()).collect(Collectors.toList());									
+//			Alpha[] res = new Alpha[alphas.size()];
+//				int i = 0;
+//				for (Alpha alpha : alphas) {
+//					res[i] = alpha.deepClone();
+//					i += 1;
+//				}
+//				return res;
+//		}
+//
+//	}
 	
 
 	/**
@@ -241,7 +248,10 @@ public class BreakoutState {
 	
 
 	private Ball removeDead(Ball ball) {
-		if( ball.getLocation().getBottommostPoint().getY() > bottomRight.getY()) { return null; }
+		if( ball.getLocation().getBottommostPoint().getY() > bottomRight.getY()) { 
+			// Remove alphas which have only one connection (this ball)
+									
+			return null; }
 		else { return ball; }
 	}
 	
@@ -359,7 +369,7 @@ public class BreakoutState {
 				}
 				for(int i = 1; i < nrBalls; ++i) {
 					Vector nballVel = ball.getVelocity().plus(BALL_VEL_VARIATIONS[i]);
-					balls[curballs.length + i -1] = ball.cloneWithVelocity_and_alphas(nballVel, Collections.emptySet());					
+					balls[curballs.length + i -1] = ball.cloneWithVelocity(nballVel);					
 				}
 			}
 			paddle = paddle.stateAfterHit();

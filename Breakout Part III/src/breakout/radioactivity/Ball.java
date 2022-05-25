@@ -119,7 +119,7 @@ public abstract class Ball {
 	 * @post | getLinkedAlphas().isEmpty()
 	 */
 	public Ball(Circle location, Vector velocity) {
-		updateEcharge();		
+//		updateEcharge();		
 		this.location = location;
 		this.velocity = velocity;
 		
@@ -263,13 +263,17 @@ public abstract class Ball {
 	 * @post | result.getLocation().equals(getLocation())
 	 * @post | result.getVelocity().equals(v)
 	 * 
-	 * Is a deep clone
-	 * @post result and this are linked to alphas with same velocity, location and echarge
-	 * 		 | getLinkedAlphas().stream().allMatch(a1 -> result.getLinkedAlphas().stream().allMatch(a2 -> (a2.getVelocity() == a1.getVelocity())
-	 * 		 |													&&  (a2.getEcharge() == a1.getEcharge()) 
-	 * 		 |													&&  (a2.getLocation() == a1.getLocation())))
+//	 * Is a deep clone
+//	 * @post result and this are linked to alphas with same velocity, location and echarge
+//	 * 		 | getLinkedAlphas().stream().allMatch(a1 -> result.getLinkedAlphas().stream().allMatch(a2 -> (a2.getVelocity() == a1.getVelocity())
+//	 * 		 |													&&  (a2.getEcharge() == a1.getEcharge()) 
+//	 * 		 |													&&  (a2.getLocation() == a1.getLocation())))
 	 */
-	public abstract Ball cloneWithVelocity_and_alphas(Vector v, Set<Alpha> alphas);
+	public abstract Ball cloneWithVelocity(Vector v);
+	
+	public Ball shallowClone() {
+		return cloneWithVelocity(getVelocity());
+	}
 	
 	
 	/**
@@ -279,9 +283,19 @@ public abstract class Ball {
 	 * @creates result
 	 * @post | result.getLocation().equals(getLocation())
 	 * @post | result.getVelocity().equals(getVelocity())
+	 * 
+	 * Is a deep clone
+	 * @post result and this are linked to alphas with same velocity, location and echarge
+	 * 		 | (getLinkedAlphas().size() == 0) || getLinkedAlphas().stream().allMatch(a1 -> result.getLinkedAlphas().stream().anyMatch(a2 -> (a2.getVelocity() == a1.getVelocity())
+	 * 		 |													&&  (a2.getEcharge() == a1.getEcharge())))
+	 * @post | getLinkedAlphas().size() == result.getLinkedAlphas().size()
 	 */
-	public Ball clone() {
-		return cloneWithVelocity_and_alphas(getVelocity(), getLinkedAlphas());
+	public Ball deepClone() {
+		Ball res = shallowClone();
+		for (Alpha alpha: getLinkedAlphas()) {
+			res.linkTo(alpha.shallowClone());
+		}
+		return res;
 	}
 	
 	

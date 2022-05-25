@@ -97,7 +97,8 @@ class SubmissionTest3 {
 		
 		assertNotEquals( oldBallSpeed, fac.getBall0Vel(state) ); //speeds have been mirrored.
 		assertNotEquals( oldAlphaSpeed, fac.getVelocity(fac.getAlphas(state)[0]) );
-		
+		System.out.print(fac.getVelocity(fac.getAlphas(state)[0]));
+		System.out.print(fac.getBall0Vel(state));
 		assertFalse( fac.isDead(state) );
 	}
 	
