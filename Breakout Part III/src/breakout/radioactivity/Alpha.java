@@ -1,6 +1,7 @@
 package breakout.radioactivity;
 
 import java.awt.Color;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -40,7 +41,6 @@ public class Alpha {
      * @peerObjects
      */
     public Set<Ball> getLinkedBalls() {
-    	//System.out.print(linkedBalls);
     	return Set.copyOf(linkedBalls); }
     
     
@@ -93,14 +93,16 @@ public class Alpha {
 	}
 	
 	/**
-	 * @param location the location to set
+	 * @pre | location != null
+	 * @post | getLocation() == location
 	 */
 	public void setLocation(Circle location) {
 		this.location = location;
 	}
 
 	/**
-	 * @param velocity the velocity to set
+	 * @pre | velocity != null
+	 * @post | getVelocity() == velocity
 	 */
 	public void setVelocity(Vector velocity) {
 		this.velocity = velocity;
@@ -141,16 +143,35 @@ public class Alpha {
 	 * @pre | rect != null
 	 * @pre | collidesWith(rect)
 	 * @post | getLocation().equals(old(getLocation()))
-	 * @mutates_properties velocity of balls linked with this alpha
+	 * 
+//	 * @post Velocity of linked balls gets updated with static, magnet fonction
+//	 * 		| getLinkedBalls().stream().allMatch(b1 -> old(getLinkedBalls()).stream().anyMatch(b -> b1.getVelocity() 
+//	 * 		| 				== Vector.magnetSpeed(old(getCenter()), b.getCenter(), old(getEcharge()), b.getVelocity())))
+//	 * 
+	 * 
+	 * 
+	 * @mutates_properties velocity of balls linked with this alpha changes
 	 * 		| (...getLinkedBalls()).getVelocity()
 	 */
 	
 	public void hitWall(Rect rect) {
+		System.out.print("\nvelocity of old balls: " + Arrays.toString((getLinkedBalls().stream().map(b -> b.getVelocity()).toArray())));
+		System.out.print("\nvelocity of old balls + magnetism: " + Arrays.toString((getLinkedBalls().stream().map(b 
+		-> (Vector.magnetSpeed(getCenter(), b.getCenter(), getEcharge(), b.getVelocity()))).toArray())));
+
 		velocity = bounceOn(rect);
 		for(Ball ball: getLinkedBalls()) {
 			Vector nspeed = Vector.magnetSpeed(this.getCenter(), ball.getCenter(), this.eCharge, ball.getVelocity());
 			ball.setVelocity(nspeed);
 		}
+		//print statements
+		System.out.print("\nvelocity of new balls: " + Arrays.toString((getLinkedBalls().stream().map(b -> b.getVelocity()).toArray())));
+		
+
+		
+		
+		
+		
 	}
 	
 	/**

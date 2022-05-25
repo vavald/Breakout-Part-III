@@ -54,10 +54,4 @@ public class NormalBall extends Ball {
 		Ball res = new NormalBall(getLocation(), v);
 		return res;
 	}
-	
-//	@Override
-//	public Ball cloneWithVelocity(Vector v) {
-//		return new NormalBall(getLocation(), v);
-//	}
-
 }

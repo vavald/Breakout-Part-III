@@ -63,7 +63,8 @@ public class SuperChargedBall extends NormalBall {
 		}
 		location = new Circle(getLocation().getCenter().plus(v), getLocation().getDiameter());
 	}
-
+	
+	
 	@Override
 	public Ball cloneWithVelocity(Vector v) {
 		Ball res = new SuperChargedBall(getLocation(), v, lifetime);

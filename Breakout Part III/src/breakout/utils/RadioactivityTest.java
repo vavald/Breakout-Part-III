@@ -42,9 +42,14 @@ class RadioactivityTest {
 		Rect rightWall = new Rect(new Point(BR.getX(), 0),
 				new Point(BR.getX() + 1000, BR.getY()));
 		
-		alpha1.hitWall(rightWall);
-
-		assertNotEquals( oldBallSpeed, ball.getVelocity() ); //speeds have been mirrored.
+		assertFalse(alpha1.collidesWith(rightWall));
+//		alpha1.hitWall(rightWall);
+//
+//		assertNotEquals( oldBallSpeed, ball.getVelocity() ); //speeds have been mirrored.
+		
+		
+		//Testing Alpha > hitWall > @post
+		
 	}
 	
 	

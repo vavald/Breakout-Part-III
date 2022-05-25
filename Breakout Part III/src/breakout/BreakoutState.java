@@ -127,12 +127,15 @@ public class BreakoutState {
 		if (!Arrays.stream(alphas).allMatch(b -> getFieldInternal().contains(b.getLocation())))
 			throw new IllegalArgumentException();
 
-		// balls.clone() does a shallow copy by default
+		// Constructor makes deepClone of both balls, and alphas, to avoid represetationObject exposure
 		this.balls = new Ball[balls.length];
 		for(int i = 0; i < balls.length; ++i) {
 			this.balls[i] = balls[i].deepClone();
 		}
-		this.alphas = alphas; 
+		this.alphas = new Alpha[alphas.length];
+		for(int i = 0; i < alphas.length; ++i) {
+			this.alphas[i] = alphas[i].deepClone();
+		}
 		
 		this.blocks = blocks.clone();
 		this.paddle = paddle;
@@ -145,9 +148,12 @@ public class BreakoutState {
 	}
 
 	/**
-	 * Return the balls of this BreakoutState.
-	 *
+	 * Returns a deepclone of the balls of this BreakoutState.
+	 * 
+	 * @inspects this
 	 * @creates result
+	 * @post | result != null
+	 * 
 	 */
 	public Ball[] getBalls() {
 		Ball[] res = new Ball[balls.length];
@@ -157,8 +163,9 @@ public class BreakoutState {
 		return res; 
 	}
 	/**
-	 * Return all alphas of this BreakoutState
+	 * Returns a deepclone of the alphas of this BreakoutState.
 	 * 
+	 * @inspects this
 	 * @creates result
 	 * @post | result != null
 	 * 

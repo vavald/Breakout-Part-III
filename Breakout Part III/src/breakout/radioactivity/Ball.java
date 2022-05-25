@@ -52,7 +52,6 @@ public abstract class Ball {
      * @peerObjects
      */
     public Set<Alpha> getLinkedAlphas() {
-    	//System.out.print(Set.copyOf(linkedAlphas));//not empty, but GetAlphas from facade always empty ??!!
     	return Set.copyOf(linkedAlphas);}
     
     /**
@@ -68,7 +67,7 @@ public abstract class Ball {
     	linkedAlphas.add(alpha);
     	alpha.linkedBalls.add(this);
     	updateEcharge(); 
-    	updateEcharge(alpha);//##
+    	updateEcharge(alpha);
     }
     
     /**
@@ -84,9 +83,9 @@ public abstract class Ball {
     	linkedAlphas.remove(alpha);
     	alpha.linkedBalls.remove(this);
     	updateEcharge();
-    	updateEcharge(alpha); //##
+    	updateEcharge(alpha); 
     }
-    //###
+   
     /**
      * Invariants for echarge:
      * Betrekking tot teken
@@ -96,7 +95,7 @@ public abstract class Ball {
      * @invar | Math.abs(eCharge) == getLinkedAlphas().stream().mapToInt(a -> a.getLinkedBalls().size()).max().getAsInt() ||
      * 		  | 		(Math.abs(eCharge) == 1 && getLinkedAlphas().size() == 0)
      */
-    //###
+
     protected int eCharge = 1;
     /**
      * @invar | location != null
@@ -117,9 +116,9 @@ public abstract class Ball {
 	 * @post | getVelocity().equals(velocity)
 	 * 
 	 * @post | getLinkedAlphas().isEmpty()
+	 * @post | getEcharge() == 1
 	 */
-	public Ball(Circle location, Vector velocity) {
-//		updateEcharge();		
+	public Ball(Circle location, Vector velocity) {	
 		this.location = location;
 		this.velocity = velocity;
 		
@@ -140,8 +139,7 @@ public abstract class Ball {
 	}
 	
 	/**
-	 * Return the echarge
-	 * @inspects this
+	 * Return this ball's eCharge
 	 */
 	public int getEcharge() {
 		return eCharge;
@@ -263,11 +261,6 @@ public abstract class Ball {
 	 * @post | result.getLocation().equals(getLocation())
 	 * @post | result.getVelocity().equals(v)
 	 * 
-//	 * Is a deep clone
-//	 * @post result and this are linked to alphas with same velocity, location and echarge
-//	 * 		 | getLinkedAlphas().stream().allMatch(a1 -> result.getLinkedAlphas().stream().allMatch(a2 -> (a2.getVelocity() == a1.getVelocity())
-//	 * 		 |													&&  (a2.getEcharge() == a1.getEcharge()) 
-//	 * 		 |													&&  (a2.getLocation() == a1.getLocation())))
 	 */
 	public abstract Ball cloneWithVelocity(Vector v);
 	
@@ -314,7 +307,6 @@ public abstract class Ball {
 	public void updateEcharge() {	//Wanneer? als linkTo() of unLink() wordt opgeroepen
 		// Waarde update
 		if (getLinkedAlphas().size() == 0) {eCharge = 1;}
-		
 		else {eCharge = getLinkedAlphas().stream().mapToInt(a -> a.getLinkedBalls().size()).max().getAsInt();}
 		// Teken update
 		if (getLinkedAlphas().size() % 2 == 0) {
@@ -335,35 +327,4 @@ public abstract class Ball {
 		}
 			
 	}
-	//###
 }
-	
-//Do not override equal methods in mutable classes when working with Set
-//	@Override
-//	public boolean equals(Object obj) {
-//		if (this == obj)
-//			return true;
-//		if (obj == null)
-//			return false;
-//		if (getClass() != obj.getClass())
-//			return false;
-//		Ball other = (Ball) obj;
-//		if (!getVelocity().equals(other.getVelocity()))
-//			return false;
-//		if (!getLocation().getCenter().equals(other.getLocation().getCenter()))
-//			return false;
-//		if (getLocation().getDiameter() != other.getLocation().getDiameter())
-//			return false;
-//		return true;
-//	}
-//	
-//	/**
-//	 * Careful: depends on mutable state of this object.
-//	 * As a result, Balls must not be modified while they are used as key in a hash set or table. 
-//	 * 
-//	 * @inspects | this
-//	 */
-//	@Override
-//	public int hashCode() {
-//		return Objects.hash(location, velocity);
-//	}	
