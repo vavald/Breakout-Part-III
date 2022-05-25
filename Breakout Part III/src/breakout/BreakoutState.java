@@ -25,8 +25,10 @@ import breakout.radioactivity.*;
  * @invar | getBlocks() != null
  * @invar | getPaddle() != null
  * @invar | getBottomRight() != null
+ * @invar | getAlphas() != null
  * @invar | Point.ORIGIN.isUpAndLeftFrom(getBottomRight())
  * @invar | Arrays.stream(getBlocks()).allMatch(b -> getField().contains(b.getLocation()))
+ * @invar | Arrays.stream(getAlphas()).allMatch(b -> getField().contains(b.getLocation()))
  * @invar | getField().contains(getPaddle().getLocation())
  */
 public class BreakoutState {
@@ -49,8 +51,8 @@ public class BreakoutState {
 	 */
 	private Ball[] balls;
 	/**
-	 * @invar | alphas !=null
-	 * @invar | Arrays.stream(alphas).allMatch(b -> getFieldInternal().contains(b.getLocation()))
+	 * @invar | blocks !=null
+	 * @invar | Arrays.stream(blocks).allMatch(b -> getFieldInternal().contains(b.getLocation()))
 	 * @representationObject
 	 */
 	
@@ -66,7 +68,11 @@ public class BreakoutState {
 	private final Rect leftWall;
 	private final Rect[] walls;
 	/**
+	 * 
+	 * @invar | alphas != null
+	 * @invar | Arrays.stream(alphas).allMatch(a -> getFieldInternal().contains(a.getLocation()))
 	 * @representationObject
+	 * @representationOjbects Each Alpha on itself is representation object
 	 */
 	private Alpha[] alphas= {};
 
@@ -77,14 +83,17 @@ public class BreakoutState {
 	 * @throws IllegalArgumentException | blocks == null
 	 * @throws IllegalArgumentException | bottomRight == null
 	 * @throws IllegalArgumentException | paddle == null
+	 * @throws IllegalArgumentException | alphas == null
 	 * @throws IllegalArgumentException | !Point.ORIGIN.isUpAndLeftFrom(bottomRight)
 	 * @throws IllegalArgumentException | !(new Rect(Point.ORIGIN,bottomRight)).contains(paddle.getLocation())
 	 * @throws IllegalArgumentException | !Arrays.stream(blocks).allMatch(b -> (new Rect(Point.ORIGIN,bottomRight)).contains(b.getLocation()))
 	 * @throws IllegalArgumentException | !Arrays.stream(balls).allMatch(b -> (new Rect(Point.ORIGIN,bottomRight)).contains(b.getLocation()))
+	 * @throws IllegalArgumentException | !Arrays.stream(alphas).allMatch(b -> (new Rect(Point.ORIGIN,bottomRight)).contains(b.getLocation()))
 	 * @post | Arrays.equals(getBlocks(),blocks)
 	 * @post | getBottomRight().equals(bottomRight)
 	 * @post | getPaddle().equals(paddle)
 	 * 
+	 *
 	 * @post | Arrays.stream(balls).allMatch(b1 -> Arrays.stream(getBalls()).allMatch(b2 -> (b2.getVelocity() == b1.getVelocity())
 	 * 		 |													&&  (b2.getEcharge() == b1.getEcharge()) 
 	 * 		 |													&&  (b2.getLocation() == b1.getLocation())))
@@ -104,7 +113,8 @@ public class BreakoutState {
 			throw new IllegalArgumentException();
 		if (paddle == null)
 			throw new IllegalArgumentException();
-
+		if (alphas == null)
+			throw new IllegalArgumentException();
 		if (!Point.ORIGIN.isUpAndLeftFrom(bottomRight))
 			throw new IllegalArgumentException();
 		this.bottomRight = bottomRight;
@@ -113,6 +123,8 @@ public class BreakoutState {
 		if (!Arrays.stream(blocks).allMatch(b -> getFieldInternal().contains(b.getLocation())))
 			throw new IllegalArgumentException();
 		if (!Arrays.stream(balls).allMatch(b -> getFieldInternal().contains(b.getLocation())))
+			throw new IllegalArgumentException();
+		if (!Arrays.stream(alphas).allMatch(b -> getFieldInternal().contains(b.getLocation())))
 			throw new IllegalArgumentException();
 
 		// balls.clone() does a shallow copy by default
@@ -140,17 +152,20 @@ public class BreakoutState {
 	public Ball[] getBalls() {
 		Ball[] res = new Ball[balls.length];
 		for (int i = 0 ; i < balls.length ; ++i) {
-			res[i] = balls[i].cloneWithVelocity_and_alphas(balls[i].getVelocity(),balls[i].getLinkedAlphas());
+			res[i] = balls[i].clone();
 		}
 		return res; 
 	}
 	/**
-	 * Function to retrieve all alphas currently in the game
+	 * Return all alphas of this BreakoutState
+	 * 
 	 * @creates result
+	 * @post | result != null
+	 * 
 	 */
 	public Alpha[] getAlphas() {
 		if (balls.length==0) {
-			return alphas;
+			return alphas.clone();		//Representation exposure !!
 		}
 		else {
 			List<Alpha> alphas = Arrays.asList(balls).stream().flatMap(b -> 
@@ -158,11 +173,11 @@ public class BreakoutState {
 			Alpha[] res = new Alpha[alphas.size()];
 				int i = 0;
 				for (Alpha alpha : alphas) {
-					res[i] = (Alpha) alpha.clone();
+					res[i] = alpha.clone();
 					i += 1;
 				}
 				return res;
-			}
+		}
 
 	}
 	

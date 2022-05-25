@@ -60,7 +60,8 @@ public abstract class Ball {
      * @post | getLinkedAlphas().equals(LogicalSet.plus(old(getLinkedAlphas()), alpha))
      * @post | alpha.getLinkedBalls().equals(LogicalSet.plus(old(alpha.getLinkedBalls()), this))
      * 
-     * @mutates_properties | getLinkedAlphas(), alpha.getLinkedBalls()
+     * @mutates_properties | getLinkedAlphas(), alpha.getLinkedBalls(), 
+     * 					   |	(...alpha.getLinkedBalls()).getEcharge()
      */
     
     public void linkTo(Alpha alpha) {
@@ -75,7 +76,8 @@ public abstract class Ball {
      * @post | getLinkedAlphas().equals(LogicalSet.minus(old(getLinkedAlphas()), alpha))
      * @post | alpha.getLinkedBalls().equals(LogicalSet.minus(old(alpha.getLinkedBalls()), this))
      * 
-     * @mutates_properties | getLinkedAlphas(), alpha.getLinkedBalls()
+     * @mutates_properties | getLinkedAlphas(), alpha.getLinkedBalls(),
+     * 					   |	(...alpha.getLinkedBalls()).getEcharge()
      */
     
     public void unLink(Alpha alpha) {
@@ -96,6 +98,10 @@ public abstract class Ball {
      */
     //###
     protected int eCharge = 1;
+    /**
+     * @invar | location != null
+     * @invar | velocity != null
+     */
 	protected Circle location;
 	protected Vector velocity;
 
@@ -105,7 +111,7 @@ public abstract class Ball {
 	 * @pre | location != null
 	 * @pre | velocity != null
 	 * 
-	 * @mutates | this
+	 * @mutates this
 	 * 
 	 * @post | getLocation().equals(location)
 	 * @post | getVelocity().equals(velocity)
@@ -113,7 +119,7 @@ public abstract class Ball {
 	 * @post | getLinkedAlphas().isEmpty()
 	 */
 	public Ball(Circle location, Vector velocity) {
-		updateEcharge();		//##
+		updateEcharge();		
 		this.location = location;
 		this.velocity = velocity;
 		
@@ -135,20 +141,23 @@ public abstract class Ball {
 	
 	/**
 	 * Return the echarge
+	 * @inspects this
 	 */
 	public int getEcharge() {
 		return eCharge;
 	}
 
 	/**
-	 * @param location the location to set
+	 * @pre | location != null
+	 * @post | getLocation() == location
 	 */
 	public void setLocation(Circle location) {
 		this.location = location;
 	}
 
 	/**
-	 * @param velocity the velocity to set
+	 * @pre | velocity != null
+	 * @post | getVelocity() == velocity
 	 */
 	public void setVelocity(Vector velocity) {
 		this.velocity = velocity;
@@ -253,11 +262,15 @@ public abstract class Ball {
 	 * @creates result
 	 * @post | result.getLocation().equals(getLocation())
 	 * @post | result.getVelocity().equals(v)
+	 * 
+	 * Is a deep clone
+	 * @post result and this are linked to alphas with same velocity, location and echarge
+	 * 		 | getLinkedAlphas().stream().allMatch(a1 -> result.getLinkedAlphas().stream().allMatch(a2 -> (a2.getVelocity() == a1.getVelocity())
+	 * 		 |													&&  (a2.getEcharge() == a1.getEcharge()) 
+	 * 		 |													&&  (a2.getLocation() == a1.getLocation())))
 	 */
-	
-	
-	
 	public abstract Ball cloneWithVelocity_and_alphas(Vector v, Set<Alpha> alphas);
+	
 	
 	/**
 	 * Return a clone of this BallState.
@@ -271,10 +284,17 @@ public abstract class Ball {
 		return cloneWithVelocity_and_alphas(getVelocity(), getLinkedAlphas());
 	}
 	
-	//###
+	
 	/**
 	 * 
-	 * @mutates | this
+	 * @mutates this
+	 * @post abs value of eCharge changes 
+	 * 		| ((Math.abs(getEcharge()) == 1) && (getLinkedAlphas().size() == 0)) ||
+	 * 		| Math.abs(getEcharge()) == getLinkedAlphas().stream().mapToInt(a -> a.getLinkedBalls().size()).max().getAsInt()
+	 * @post sign of eCharge changes
+	 *		| (getEcharge() < 0  && getLinkedAlphas().size() % 2 != 0)	||
+     * 		|	(getEcharge() > 0 && getLinkedAlphas().size() % 2 == 0)
+     * 			
 	 * 
 	 */
 	public void updateEcharge() {	//Wanneer? als linkTo() of unLink() wordt opgeroepen
@@ -292,7 +312,7 @@ public abstract class Ball {
 	/**
 	 * 
 	 * @pre | alpha != null
-	 * @mutates_properties | alpha.getLinkedBalls()
+	 * @mutates_properties | (...alpha.getLinkedBalls()).getEcharge()
 	 * 
 	 */
 	public void updateEcharge(Alpha alpha) {	

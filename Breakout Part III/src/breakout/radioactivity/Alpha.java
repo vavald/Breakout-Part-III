@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.HashSet;
 import java.util.Set;
 
+import breakout.BreakoutState;
 import breakout.utils.Circle;
 import breakout.utils.Point;
 import breakout.utils.Rect;
@@ -118,15 +119,7 @@ public class Alpha {
 		return coldir != null && (getVelocity().product(coldir) > 0);
 	}
 	
-	/**
-	 * Update the alpha after hitting a wall at a given location.
-	 * 
-	 * @pre | rect != null
-	 * @pre | collidesWith(rect)
-	 * @post | getLocation().equals(old(getLocation()))
-	 * @mutates velocity of balls linked with this alpha
-	 * 		| getLinkedBalls()
-	 */
+
 	
 	/**
 	 * Update the BallState after hitting a paddle at a given location.
@@ -142,6 +135,15 @@ public class Alpha {
 		velocity = nspeed.plus(paddleVel.scaledDiv(5));
 	}
 	
+	/**
+	 * Update the alpha after hitting a wall at a given location.
+	 * 
+	 * @pre | rect != null
+	 * @pre | collidesWith(rect)
+	 * @post | getLocation().equals(old(getLocation()))
+	 * @mutates_properties velocity of balls linked with this alpha
+	 * 		| (...getLinkedBalls()).getVelocity()
+	 */
 	
 	public void hitWall(Rect rect) {
 		velocity = bounceOn(rect);
@@ -167,9 +169,14 @@ public class Alpha {
 	}
 	
 	/**
+	 * Move this alpha by the given vector.
 	 * 
-	 * @param v
-	 * @param elapsedTime
+	 * @pre | v != null
+	 * @pre | elapsedTime >= 0
+	 * @pre | elapsedTime <= BreakoutState.MAX_ELAPSED_TIME
+	 * @post | getLocation().getCenter().equals(old(getLocation()).getCenter().plus(v))
+	 * @post | getLocation().getDiameter() == old(getLocation()).getDiameter()
+	 * @mutates this
 	 */
 	public void move(Vector v, int elapsedTime) {
 		location = new Circle(getLocation().getCenter().plus(v), getLocation().getDiameter());
