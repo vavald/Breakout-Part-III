@@ -32,12 +32,14 @@ class LinksTest {
 		b1.linkTo(a1);
 		assertEquals(b1.getEcharge(), -1);		//## one connected alpha > uneven > negatif && alphas have max 1 connection...
 		b1.linkTo(a2);
+		b1.linkTo(a2);                           // Has no impact !!
 		assertEquals(b1.getEcharge(), 1);		//##
 		assertEquals(b1.getLinkedAlphas().size(), 2);
 		assertTrue(a1.getLinkedBalls().contains(b1));
 		assertTrue(a2.getLinkedBalls().contains(b1));
 		
 		//unLink testing
+		b1.unLink(a2);
 		b1.unLink(a2);
 		assertEquals(b1.getEcharge(), -1);		//##
 		assertEquals(b1.getLinkedAlphas().size(), 1);

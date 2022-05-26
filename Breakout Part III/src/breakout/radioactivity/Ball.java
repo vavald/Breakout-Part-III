@@ -58,6 +58,8 @@ public abstract class Ball {
      * @pre | alpha != null
      * @post | getLinkedAlphas().equals(LogicalSet.plus(old(getLinkedAlphas()), alpha))
      * @post | alpha.getLinkedBalls().equals(LogicalSet.plus(old(alpha.getLinkedBalls()), this))
+     * @post | getLinkedAlphas().size() == old(getLinkedAlphas()).size() + 1 ||
+     * 		 |		(getLinkedAlphas().contains(alpha) && (getLinkedAlphas().size() == old(getLinkedAlphas().size()))) 
      * 
      * @mutates_properties | getLinkedAlphas(), alpha.getLinkedBalls(), 
      * 					   |	(...alpha.getLinkedBalls()).getEcharge()
@@ -74,6 +76,8 @@ public abstract class Ball {
      * @pre | alpha != null
      * @post | getLinkedAlphas().equals(LogicalSet.minus(old(getLinkedAlphas()), alpha))
      * @post | alpha.getLinkedBalls().equals(LogicalSet.minus(old(alpha.getLinkedBalls()), this))
+     * @post | getLinkedAlphas().size() == old(getLinkedAlphas()).size() - 1 ||
+     * 		 |		!(getLinkedAlphas().contains(alpha) && (getLinkedAlphas().size() == old(getLinkedAlphas().size()))) 
      * 
      * @mutates_properties | getLinkedAlphas(), alpha.getLinkedBalls(),
      * 					   |	(...alpha.getLinkedBalls()).getEcharge()
@@ -274,13 +278,14 @@ public abstract class Ball {
 	 * 
 	 * @inspects this
 	 * @creates result
+//     * @post | result.getEcharge() == getEcharge()
 	 * @post | result.getLocation().equals(getLocation())
 	 * @post | result.getVelocity().equals(getVelocity())
 	 * 
 	 * Is a deep clone
 	 * @post result and this are linked to alphas with same velocity, location and echarge
-	 * 		 | (getLinkedAlphas().size() == 0) || getLinkedAlphas().stream().allMatch(a1 -> result.getLinkedAlphas().stream().anyMatch(a2 -> (a2.getVelocity() == a1.getVelocity())
-	 * 		 |													&&  (a2.getEcharge() == a1.getEcharge())))
+	 * 		 | (getLinkedAlphas().size() == 0) || getLinkedAlphas().stream().allMatch(a1 -> result.getLinkedAlphas().stream().anyMatch(a2 -> (a2.getVelocity().equals(a1.getVelocity()))
+	 * 		 |													&&  (a2.getEcharge() == a1.getEcharge()) && (a2.getLocation().equals(a1.getLocation()))))
 	 * @post | getLinkedAlphas().size() == result.getLinkedAlphas().size()
 	 */
 	public Ball deepClone() {
