@@ -173,10 +173,7 @@ public class BreakoutState {
 	public Alpha[] getAlphas() {
 		Alpha[] res = new Alpha[alphas.length];
 		for (int i = 0 ; i < alphas.length; ++i) {
-			System.out.print("\n/////");
-			System.out.print(alphas[i].getLinkedBalls().size());
 			res[i] = alphas[i].deepClone();
-			System.out.print(res[i].getLinkedBalls().size());
 		}
 		return res; 
 	}
@@ -359,7 +356,6 @@ public class BreakoutState {
 
 	private void collideBallPaddle(Ball ball, Vector paddleVel) {
 		if (ball.collidesWith(paddle.getLocation())) {
-			System.out.print("###############ALPHA SPAWNED###############");
 			ball.hitPaddle(paddle.getLocation(),paddleVel);
 			
 			//Creation of Alpha particles !!!
