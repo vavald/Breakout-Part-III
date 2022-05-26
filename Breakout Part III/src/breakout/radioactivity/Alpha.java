@@ -137,6 +137,9 @@ public class Alpha {
 		velocity = nspeed.plus(paddleVel.scaledDiv(5));
 	}
 	
+	public boolean print(Vector v) {System.out.print("TTTTTT "+ v);
+		return true;
+	}
 	
 	
 	/**
@@ -150,10 +153,10 @@ public class Alpha {
 //	 * 		| getLinkedBalls().stream().allMatch(b1 -> old(getLinkedBalls()).stream().anyMatch(b -> b1.getVelocity().equals( 
 //	 * 		| 				Vector.magnetSpeed(old(getCenter()), b.getCenter(), b.getEcharge(), b.getVelocity()))))
 	 * 
-	 * @post | true == getLinkedBalls().stream().allMatch(b1 -> old(getLinkedBalls()).stream().anyMatch(b -> 
-	 * 		 | 		b1.getVelocity().equals( Vector.magnetSpeed(old(getCenter()), b.getCenter(), b.getEcharge(), b.getVelocity()) && 
-	 * 		 |						print(Vector.magnetSpeed(old(getCenter()), b.getCenter(), b.getEcharge(), b.getVelocity())	)))
-	 * 		 |		  
+//	 * @post | true == getLinkedBalls().stream().allMatch(b1 -> old(getLinkedBalls()).stream().anyMatch(b -> 
+//	 * 		 | 		b1.getVelocity().equals( Vector.magnetSpeed(old(getCenter()), b.getCenter(), b.getEcharge(), b.getVelocity())) &&
+//	 * 		 |						print(Vector.magnetSpeed(old(getCenter()), b.getCenter(), b.getEcharge(), b.getVelocity()))	))
+//	 * 		 |		  
 	 * 
 	 * @mutates_properties velocity of balls linked with this alpha changes
 	 * 		| (...getLinkedBalls()).getVelocity()
@@ -173,27 +176,12 @@ public class Alpha {
 		for(Ball ball: getLinkedBalls()) {
 			Vector nspeed = Vector.magnetSpeed(this.getCenter(), ball.getCenter(), ball.getEcharge(), ball.getVelocity());
 			ball.setVelocity(nspeed);
-		}
-		//print statements
-		System.out.print("\nvelocity of new balls: " + Arrays.toString((getLinkedBalls().stream().map(b -> b.getVelocity()).toArray())));
-		System.out.print("\nSize (number of linked balls :" + getLinkedBalls().size());
 		
-		
-		 
-//		  boolean boo = getLinkedBalls().stream().allMatch(b1 -> clone.getLinkedBalls().stream().anyMatch(b -> b1.getVelocity().equals( 
-//		  				Vector.magnetSpeed(clone.getCenter(), b.getCenter(), b.getEcharge(), b.getVelocity()))));
-		  
-//		  System.out.print("\nvelocity of old balls + magnetism: " + Arrays.toString((clone.getLinkedBalls().stream().map(b 
-//					-> (Vector.magnetSpeed(clone.getCenter(), b.getCenter(), b.getEcharge(), b.getVelocity()))).toArray())));
-//		  
-//		  
-//		  System.out.print("\n" + boo);
-//		  System.out.print("\n" + boo);
 //		 
 		
 		  System.out.print("\n--------------------------------------------");
 		
-		
+		}
 		
 		
 	}

@@ -17,6 +17,7 @@ import java.lang.Math;
  * 
  * @invar | getLocation() != null
  * @invar | getVelocity() != null
+ * @invar | getLocation().getCenter().getX() > 3
  * 
  * Invariants for echarge:
  * Betrekking tot teken
@@ -293,7 +294,8 @@ public abstract class Ball {
 	public Ball deepClone() {
 		Ball res = shallowClone();
 		for (Alpha alpha: getLinkedAlphas()) {
-			res.linkTo(alpha.shallowClone());
+			Alpha a = alpha.shallowClone();
+			res.linkTo(a);
 			
 		}
 		return res;
