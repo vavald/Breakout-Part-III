@@ -137,6 +137,8 @@ public class Alpha {
 		velocity = nspeed.plus(paddleVel.scaledDiv(5));
 	}
 	
+	
+	
 	/**
 	 * Update the alpha after hitting a wall at a given location.
 	 * 
@@ -149,8 +151,9 @@ public class Alpha {
 //	 * 		| 				Vector.magnetSpeed(old(getCenter()), b.getCenter(), b.getEcharge(), b.getVelocity()))))
 	 * 
 	 * @post | true == getLinkedBalls().stream().allMatch(b1 -> old(getLinkedBalls()).stream().anyMatch(b -> 
-	 * 		 | 		b1.getVelocity().equals( Vector.magnetSpeed(old(getCenter()), b.getCenter(), b.getEcharge(), b.getVelocity()))))
-	 * 
+	 * 		 | 		b1.getVelocity().equals( Vector.magnetSpeed(old(getCenter()), b.getCenter(), b.getEcharge(), b.getVelocity()) && 
+	 * 		 |						print(Vector.magnetSpeed(old(getCenter()), b.getCenter(), b.getEcharge(), b.getVelocity())	)))
+	 * 		 |		  
 	 * 
 	 * @mutates_properties velocity of balls linked with this alpha changes
 	 * 		| (...getLinkedBalls()).getVelocity()
