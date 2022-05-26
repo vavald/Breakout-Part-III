@@ -32,20 +32,30 @@ class RadioactivityTest {
 		assertEquals(alpha.getCenter(), new Point(50000, 30000));
 		assertEquals(alpha.getColor(), Color.white);
 		
-		Alpha alpha1 = fac.createAlpha(defPoint, 700, new Vector(5, 0));
-		Ball ball = fac.createSuperchargedBall(new Point(2000, 5000), 700, new Vector(5, 0), 10000);
+		Alpha alpha1 = fac.createAlpha(new Point(48850,5000), 700, new Vector(5, 0));
+		Alpha alpha2 = fac.createAlpha(new Point(30000,5000), 700, new Vector(5, 0)); //Alpha's center is not in the wall
+		Ball ball = fac.createNormalBall(new Point(2000, 5000), 700, new Vector(4, -2));
 		Vector oldBallSpeed = fac.getVelocity(ball);
 		ball.linkTo(alpha1);
-		BlockState tlBlock = fac.createNormalBlockState(origin, new Point(5000, 3750));
-		PaddleState paddle = fac.createNormalPaddleState(new Point(2500, 8000));
-		BreakoutState state = fac.createBreakoutState(new Alpha[] {alpha1}, new Ball[] {}, new BlockState[] {tlBlock}, BR, paddle);
-		Rect rightWall = new Rect(new Point(BR.getX(), 0),
-				new Point(BR.getX() + 1000, BR.getY()));
+		ball.linkTo(alpha);
+		ball.linkTo(alpha2);
+		System.out.print(ball.getLinkedAlphas().size()); //size of linkedalphas set  = 3
+		System.out.print(ball.getEcharge()); // ball echarge ==-1 ?
+		Rect rightWall = new Rect(new Point(BR.getX()-1000, 0),
+				new Point(BR.getX(), BR.getY()));
 		
-		assertFalse(alpha1.collidesWith(rightWall));
-//		alpha1.hitWall(rightWall);
-//
-//		assertNotEquals( oldBallSpeed, ball.getVelocity() ); //speeds have been mirrored.
+		assertEquals(alpha1.getLocation().getOutermostPoint(new Vector(1,0)),new Point(49200,5000)); // 
+		
+		assertTrue(rightWall.contains(alpha1.getLocation().getOutermostPoint(new Vector(1,0)))); //  Right outermost point of alpha is in wall
+		
+		assertEquals(rightWall.collideWith(alpha1.getLocation()),new Vector(1,0)); // 
+		
+		assertTrue(alpha1.collidesWith(rightWall)); //collision between alpha and wall will be true if asked for it 
+		
+		
+		alpha1.hitWall(rightWall); // collision is true ! 
+
+		assertNotEquals( oldBallSpeed, ball.getVelocity() ); //speeds still the same because ball charge == 1
 		
 		
 		//Testing Alpha > hitWall > @post

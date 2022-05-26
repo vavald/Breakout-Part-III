@@ -155,13 +155,16 @@ public class Alpha {
 	 */
 	
 	public void hitWall(Rect rect) {
-		System.out.print("\nvelocity of old balls: " + Arrays.toString((getLinkedBalls().stream().map(b -> b.getVelocity()).toArray())));
-		System.out.print("\nvelocity of old balls + magnetism: " + Arrays.toString((getLinkedBalls().stream().map(b 
-		-> (Vector.magnetSpeed(getCenter(), b.getCenter(), getEcharge(), b.getVelocity()))).toArray())));
+		//System.out.print("\nvelocity of old balls: " + Arrays.toString((getLinkedBalls().stream().map(b -> b.getVelocity()).toArray())));
+		//System.out.print("\nvelocity of old balls + magnetism: " + Arrays.toString((getLinkedBalls().stream().map(b 
+		//-> (Vector.magnetSpeed(getCenter(), b.getCenter(), getEcharge(), b.getVelocity()))).toArray())));
 
 		velocity = bounceOn(rect);
 		for(Ball ball: getLinkedBalls()) {
-			Vector nspeed = Vector.magnetSpeed(this.getCenter(), ball.getCenter(), this.eCharge, ball.getVelocity());
+			System.out.print(ball.getVelocity());
+			System.out.print(Math.abs(ball.getEcharge()));
+			Vector nspeed = Vector.magnetSpeed(this.getCenter(), ball.getCenter(), ball.getEcharge(), ball.getVelocity());
+			System.out.print(nspeed);
 			ball.setVelocity(nspeed);
 		}
 		//print statements
