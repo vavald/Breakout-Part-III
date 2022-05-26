@@ -294,6 +294,7 @@ public abstract class Ball {
 		Ball res = shallowClone();
 		for (Alpha alpha: getLinkedAlphas()) {
 			res.linkTo(alpha.shallowClone());
+			
 		}
 		return res;
 	}

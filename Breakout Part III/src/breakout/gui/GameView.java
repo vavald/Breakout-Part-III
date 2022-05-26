@@ -215,8 +215,10 @@ public class GameView extends JPanel {
 	}
 	
 	private void paintLinks(Graphics g) {
-		for (Ball ball : facade.getBalls(breakoutState) ) {	//deep copy
-			for (Alpha alpha : facade.getAlphas(ball)) {	//shallow cop
+		for (Alpha alpha : facade.getAlphas(breakoutState) ) {	//deep copy
+			for (Ball ball : facade.getBalls(alpha)) {	//shallow cop
+//		for (Ball ball : facade.getBalls(breakoutState) ) {	//deep copy
+//			for (Alpha alpha : facade.getAlphas(ball)) {	//shallow cop
 				Point start = toGUICoord(facade.getCenter(ball));
 				Point end = toGUICoord(facade.getCenter(alpha));
 				g.setColor(Color.red);

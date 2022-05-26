@@ -256,6 +256,9 @@ public class BreakoutState {
 
 	private Ball removeDead(Ball ball) {
 		if( ball.getLocation().getBottommostPoint().getY() > bottomRight.getY()) { 
+			for (Alpha alpha: ball.getLinkedAlphas()) {
+				ball.unLink(alpha);
+			}
 			// Remove alphas which have only one connection (this ball)
 									
 			return null; }
@@ -363,8 +366,10 @@ public class BreakoutState {
 			for (int i = 0; i < alphas.length; i++)
 	            new_alphas[i] = alphas[i];
 			Alpha new_alpha = new Alpha(ball.getLocation(),paddleVel.plus(new Vector(-2,-2)));
-			new_alphas[new_alphas.length-1]=new_alpha;
 			ball.linkTo(new_alpha);
+			
+			new_alphas[new_alphas.length-1]=new_alpha;
+			
 			this.alphas=new_alphas;
 			
 			int nrBalls = paddle.numberOfBallsAfterHit();

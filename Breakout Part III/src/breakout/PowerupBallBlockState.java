@@ -22,6 +22,7 @@ public class PowerupBallBlockState extends NormalBlockState {
 		SuperChargedBall new_ball = new SuperChargedBall(ballState.getLocation(), ballState.getVelocity(), SUPERCHARGED_BALL_LIFETIME);
 		for(Alpha alpha:ballState.getLinkedAlphas()) {
 			new_ball.linkTo(alpha);
+			ballState.unLink(alpha);
 		}
 		return new_ball;//.cloneWithVelocity_and_alphas(ballState.getVelocity(), ballState.getLinkedAlphas());
 	}
