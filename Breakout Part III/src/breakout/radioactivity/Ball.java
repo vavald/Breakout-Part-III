@@ -59,7 +59,8 @@ public abstract class Ball {
      * @post | getLinkedAlphas().equals(LogicalSet.plus(old(getLinkedAlphas()), alpha))
      * @post | alpha.getLinkedBalls().equals(LogicalSet.plus(old(alpha.getLinkedBalls()), this))
      * @post | getLinkedAlphas().size() == old(getLinkedAlphas()).size() + 1 ||
-     * 		 |		(getLinkedAlphas().contains(alpha) && (getLinkedAlphas().size() == old(getLinkedAlphas().size()))) 
+     * 		 |		(getLinkedAlphas().contains(alpha) && (getLinkedAlphas().size() == old(getLinkedAlphas().size())))
+     * 
      * 
      * @mutates_properties | getLinkedAlphas(), alpha.getLinkedBalls(), 
      * 					   |	(...alpha.getLinkedBalls()).getEcharge()
@@ -123,6 +124,7 @@ public abstract class Ball {
 	 * @post | getEcharge() == 1
 	 */
 	public Ball(Circle location, Vector velocity) {	
+		updateEcharge();
 		this.location = location;
 		this.velocity = velocity;
 		

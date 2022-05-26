@@ -275,17 +275,22 @@ public class Alpha {
 	 * @post | result.getVelocity().equals(getVelocity())
 	 * 
 	 * Is a deep clone
-//	 * @post result and this are linked to alphas with same velocity, location and echarge
-//	 * 		 | (getLinkedBalls().size() == 0) || 
-//	 * 		 |	getLinkedBalls().stream().allMatch(a1 -> result.getLinkedBalls().stream().anyMatch(a2 -> (a2.getVelocity().equals(a1.getVelocity()))
-//	 * 		 |													&&  (a2.getEcharge() == a1.getEcharge())))
+	 * @post result and this are linked to alphas with same velocity, location and echarge
+	 * 		 | (getLinkedBalls().size() == 0) || (
+	 * 		 |	getLinkedBalls().stream().allMatch(b1 -> result.getLinkedBalls().stream().anyMatch(b2 -> (b2.getVelocity().equals(b1.getVelocity()))
+	 * 		 |											&& (b2.getLocation().getCenter().equals(b1.getLocation().getCenter()))		
+	 * 		 | 													)))
 	 * 		 |
 	 * @post | getLinkedBalls().size() == result.getLinkedBalls().size()
 	 */
 	public Alpha deepClone() {
+//		System.out.print(getLinkedBalls());
 		Alpha res = shallowClone();
 		for (Ball ball: getLinkedBalls()) {
-			ball.shallowClone().linkTo(res);
+			Ball cBall = ball.shallowClone();
+//			cBall.updateEcharge();
+			cBall.linkTo(res);
+//		System.out.print(res.getLinkedBalls());
 		}
 		return res;
 	}

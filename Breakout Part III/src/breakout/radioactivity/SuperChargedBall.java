@@ -15,6 +15,7 @@ public class SuperChargedBall extends NormalBall {
 	public SuperChargedBall(Circle location, Vector velocity, int lifetime) {
 		super(location, velocity);
 		this.lifetime = lifetime;
+		super.updateEcharge();
 	}
 
 	/**
