@@ -32,15 +32,16 @@ class RadioactivityTest {
 		assertEquals(alpha.getCenter(), new Point(50000, 30000));
 		assertEquals(alpha.getColor(), Color.white);
 		
-		Alpha alpha1 = fac.createAlpha(new Point(48850,5000), 700, new Vector(5, 0));
-		Alpha alpha2 = fac.createAlpha(new Point(30000,5000), 700, new Vector(5, 0)); //Alpha's center is not in the wall
-		Ball ball = fac.createNormalBall(new Point(2000, 5000), 700, new Vector(4, -2));
+		Alpha alpha1 = fac.createAlpha(new Point(48850,5000), 700, new Vector(5, -1));
+		Ball ball = fac.createNormalBall(new Point(48750, 4900), 700, new Vector(4, -2));
+		Ball ball2 = fac.createNormalBall(new Point(48750, 5100), 700, new Vector(2, -2));
+		Ball ball3 = fac.createNormalBall(new Point(48750, 5200), 700, new Vector(1, -2));
 		Vector oldBallSpeed = fac.getVelocity(ball);
 		ball.linkTo(alpha1);
-		ball.linkTo(alpha);
-		ball.linkTo(alpha2);
-		System.out.print(ball.getLinkedAlphas().size()); //size of linkedalphas set  = 3
-		System.out.print(ball.getEcharge()); // ball echarge ==-1 ?
+		ball2.linkTo(alpha1);
+		ball3.linkTo(alpha1);
+		//System.out.print(ball.getLinkedAlphas().size()); //size of linkedalphas set  = 1
+		//System.out.print(ball.getEcharge()); // ball echarge ==2 ?
 		Rect rightWall = new Rect(new Point(BR.getX()-1000, 0),
 				new Point(BR.getX(), BR.getY()));
 		
@@ -52,8 +53,11 @@ class RadioactivityTest {
 		
 		assertTrue(alpha1.collidesWith(rightWall)); //collision between alpha and wall will be true if asked for it 
 		
-		
 		alpha1.hitWall(rightWall); // collision is true ! 
+		
+		Vector balltoalpha = new Vector(100,100);
+		
+		//System.out.print(balltoalpha.product(balltoalpha));
 
 		assertNotEquals( oldBallSpeed, ball.getVelocity() ); //speeds still the same because ball charge == 1
 		

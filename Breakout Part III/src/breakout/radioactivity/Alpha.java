@@ -144,10 +144,10 @@ public class Alpha {
 	 * @pre | collidesWith(rect)
 	 * @post | getLocation().equals(old(getLocation()))
 	 * 
-//	 * @post Velocity of linked balls gets updated with static, magnet fonction
+//	 *@post Velocity of linked balls gets updated with static, magnet fonction
 //	 * 		| getLinkedBalls().stream().allMatch(b1 -> old(getLinkedBalls()).stream().anyMatch(b -> b1.getVelocity() 
-//	 * 		| 				== Vector.magnetSpeed(old(getCenter()), b.getCenter(), old(getEcharge()), b.getVelocity())))
-//	 * 
+//	 * 		| 				== Vector.magnetSpeed(old(getCenter()), b.getCenter(), b.getEcharge(), b.getVelocity())))
+	 * 
 	 * 
 	 * 
 	 * @mutates_properties velocity of balls linked with this alpha changes
@@ -161,10 +161,7 @@ public class Alpha {
 
 		velocity = bounceOn(rect);
 		for(Ball ball: getLinkedBalls()) {
-			System.out.print(ball.getVelocity());
-			System.out.print(Math.abs(ball.getEcharge()));
 			Vector nspeed = Vector.magnetSpeed(this.getCenter(), ball.getCenter(), ball.getEcharge(), ball.getVelocity());
-			System.out.print(nspeed);
 			ball.setVelocity(nspeed);
 		}
 		//print statements
