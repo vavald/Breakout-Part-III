@@ -59,6 +59,14 @@ class LinksTest {
 		Alpha a4Clone = a4.deepClone();
 		System.out.print(a4Clone.getLinkedBalls());
 		assertEquals(a4Clone.getLinkedBalls().size(), 2);
+
+		assertEquals((a4Clone.getLinkedBalls().stream().map(b -> b.getEcharge()).collect(Collectors.toSet())),
+				new HashSet<>(Arrays.asList(2, -2)));
+		
+		
+		
+		
+		
 		assertTrue(a4Clone.getLinkedBalls().stream().anyMatch(b -> 
 							b.getVelocity().equals(b2.getVelocity())));
 		
@@ -66,8 +74,7 @@ class LinksTest {
 				new HashSet<>(Arrays.asList(2, -2)));
 		
 		//Clone has wrong values for eCharge !!!
-		assertEquals((a4Clone.getLinkedBalls().stream().map(b -> b.getEcharge()).collect(Collectors.toSet())),
-				"nonce");
+		
 		//Two times -2, so set only gives back -2 !!!
 		
 		

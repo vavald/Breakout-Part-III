@@ -148,7 +148,7 @@ public class Alpha {
 //	 * 		| getLinkedBalls().stream().allMatch(b1 -> old(getLinkedBalls()).stream().anyMatch(b -> b1.getVelocity().equals( 
 //	 * 		| 				Vector.magnetSpeed(old(getCenter()), b.getCenter(), b.getEcharge(), b.getVelocity()))))
 	 * 
-	 * @post | true == getLinkedBalls().stream().allMatch(b1 -> old(deepClone()).getLinkedBalls().stream().anyMatch(b -> 
+	 * @post | true == getLinkedBalls().stream().allMatch(b1 -> old(getLinkedBalls()).stream().anyMatch(b -> 
 	 * 		 | 		b1.getVelocity().equals( Vector.magnetSpeed(old(getCenter()), b.getCenter(), b.getEcharge(), b.getVelocity()))))
 	 * 
 	 * 
@@ -158,8 +158,8 @@ public class Alpha {
 	
 	public void hitWall(Rect rect) {
 		System.out.print("\n----------------Hitwall---------------------");
-		Alpha clone = this.deepClone();
-		Point oldGetCenter = getCenter();
+//		Alpha clone = this.deepClone();
+//		Point oldGetCenter = getCenter();
 		System.out.print("\nvelocity of old balls: " + Arrays.toString((getLinkedBalls().stream().map(b -> b.getVelocity()).toArray())));
 //		System.out.print("\nvelocity of old balls + magnetism: " + Arrays.toString((getLinkedBalls().stream().map(b 
 //		-> (Vector.magnetSpeed(getCenter(), b.getCenter(), b.getEcharge(), b.getVelocity()))).toArray())));
@@ -177,16 +177,16 @@ public class Alpha {
 		
 		
 		 
-		  boolean boo = getLinkedBalls().stream().allMatch(b1 -> clone.getLinkedBalls().stream().anyMatch(b -> b1.getVelocity().equals( 
-		  				Vector.magnetSpeed(oldGetCenter, b.getCenter(), b.getEcharge(), b.getVelocity()))));
+//		  boolean boo = getLinkedBalls().stream().allMatch(b1 -> clone.getLinkedBalls().stream().anyMatch(b -> b1.getVelocity().equals( 
+//		  				Vector.magnetSpeed(clone.getCenter(), b.getCenter(), b.getEcharge(), b.getVelocity()))));
 		  
-		  System.out.print("\nvelocity of old balls + magnetism: " + Arrays.toString((clone.getLinkedBalls().stream().map(b 
-					-> (Vector.magnetSpeed(clone.getCenter(), b.getCenter(), b.getEcharge(), b.getVelocity()))).toArray())));
-		  
-		  
-		  System.out.print("\n" + boo);
-		  System.out.print("\n" + boo);
-		 
+//		  System.out.print("\nvelocity of old balls + magnetism: " + Arrays.toString((clone.getLinkedBalls().stream().map(b 
+//					-> (Vector.magnetSpeed(clone.getCenter(), b.getCenter(), b.getEcharge(), b.getVelocity()))).toArray())));
+//		  
+//		  
+//		  System.out.print("\n" + boo);
+//		  System.out.print("\n" + boo);
+//		 
 		
 		  System.out.print("\n--------------------------------------------");
 		
@@ -288,7 +288,7 @@ public class Alpha {
 //		System.out.print(getLinkedBalls());
 		Alpha res = shallowClone();
 		for (Ball ball: getLinkedBalls()) {
-			Ball cBall = ball.shallowClone();
+			Ball cBall = ball.deepClone();
 //			cBall.updateEcharge();
 			cBall.linkTo(res);
 //		System.out.print(res.getLinkedBalls());
