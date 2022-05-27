@@ -63,6 +63,7 @@ public class Alpha {
 	
     /**
 	 * Return this alpha's location.
+	 * @inspects this
 	 */
 	public Circle getLocation() {
 		return location;
@@ -70,6 +71,7 @@ public class Alpha {
 	
 	/**
 	 * Return this alpha's velocity.
+	 * @inspects this
 	 */
 	public Vector getVelocity() {
 		return velocity;
@@ -77,6 +79,7 @@ public class Alpha {
 
 	/**
 	 * Return the echarge
+	 * @inspects this
 	 */
 	public int getEcharge() {
 		return eCharge;
@@ -137,10 +140,6 @@ public class Alpha {
 		velocity = nspeed.plus(paddleVel.scaledDiv(5));
 	}
 	
-	public boolean print(Vector v) {System.out.print("TTTTTT "+ v);
-		return true;
-	}
-	
 	
 	/**
 	 * Update the alpha after hitting a wall at a given location.
@@ -162,19 +161,8 @@ public class Alpha {
 		velocity = bounceOn(rect);
 		for(Ball ball: getLinkedBalls()) {
 			Vector nspeed = Vector.magnetSpeed(this.getCenter(), ball.getCenter(), ball.getEcharge(), ball.getVelocity());
-			System.out.print("velocity before: " + nspeed);
 			ball.setVelocity(nspeed);
-			System.out.print("velocity after: " +ball.getVelocity());
-		
-			System.out.print("\nvelocity of new balls: " + Arrays.toString((getLinkedBalls().stream().map(b -> b.getVelocity()).toArray())));	 
-		
-		  System.out.print("\n--------------------------------------------");
-		
-		}
-		
-		
-	
-		
+		}	
 	}
 	
 	/**
@@ -233,10 +221,6 @@ public class Alpha {
 	public Ball transformToBallWithVelocity(Vector v) {
 		return new NormalBall(getLocation(), v);
 	}
-	
-	
-	
-	
 	/**
 	 * Return a clone of this BallState.
 	 * 
@@ -244,6 +228,7 @@ public class Alpha {
 	 * @creates result
 	 * @post | result.getLocation().equals(getLocation())
 	 * @post | result.getVelocity().equals(getVelocity())
+	 * @post | result.getLinkedBalls().isEmpty()
 	 */
 	public Alpha shallowClone() {
 		return cloneWithVelocity(getVelocity());

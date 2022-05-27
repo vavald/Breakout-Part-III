@@ -35,7 +35,6 @@ import java.lang.Math;
  * 		  | 	&& a != null)
  */
 public abstract class Ball {
-    //##
     /**
      * @invar | linkedAlphas != null
      * @invar | linkedAlphas.stream().allMatch(a -> a.getLinkedBalls().contains(this)
@@ -63,6 +62,11 @@ public abstract class Ball {
      * 		 |		(getLinkedAlphas().contains(alpha) && (getLinkedAlphas().size() == old(getLinkedAlphas().size())))
      * 
      * 
+     * @post |		Math.abs(getEcharge()) == getLinkedAlphas().stream().mapToInt(a -> a.getLinkedBalls().size()).max().getAsInt()
+     * @post | 	(getEcharge() < 0  && getLinkedAlphas().size() % 2 != 0)	||
+     * 		 |	(getEcharge() > 0 && getLinkedAlphas().size() % 2 == 0)
+     * 
+     * 
      * @mutates_properties | getLinkedAlphas(), alpha.getLinkedBalls(), 
      * 					   |	(...alpha.getLinkedBalls()).getEcharge()
      */
@@ -80,6 +84,11 @@ public abstract class Ball {
      * @post | alpha.getLinkedBalls().equals(LogicalSet.minus(old(alpha.getLinkedBalls()), this))
      * @post | getLinkedAlphas().size() == old(getLinkedAlphas()).size() - 1 ||
      * 		 |		!(getLinkedAlphas().contains(alpha) && (getLinkedAlphas().size() == old(getLinkedAlphas().size()))) 
+     * 
+     * @post |  ((Math.abs(getEcharge()) == 1) && (getLinkedAlphas().size() == 0)) ||
+     * 		 |		Math.abs(getEcharge()) == getLinkedAlphas().stream().mapToInt(a -> a.getLinkedBalls().size()).max().getAsInt()
+     * @post | 	(getEcharge() < 0  && getLinkedAlphas().size() % 2 != 0)	||
+     * 		 |	(getEcharge() > 0 && getLinkedAlphas().size() % 2 == 0)
      * 
      * @mutates_properties | getLinkedAlphas(), alpha.getLinkedBalls(),
      * 					   |	(...alpha.getLinkedBalls()).getEcharge()
@@ -267,7 +276,7 @@ public abstract class Ball {
 	 * @creates result
 	 * @post | result.getLocation().equals(getLocation())
 	 * @post | result.getVelocity().equals(v)
-	 * 
+	 * @post | result.getLinkedAlphas().isEmpty()
 	 */
 	public abstract Ball cloneWithVelocity(Vector v);
 	
