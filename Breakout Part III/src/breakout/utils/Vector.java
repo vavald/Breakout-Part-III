@@ -170,8 +170,8 @@ public class Vector {
 		//increase ball speed by max 50%. eCharges > 4 act as eCharges == 4.
 		int chargeVal = Math.abs(ballEcharge);
 		if (chargeVal == 0) {throw new IllegalArgumentException();}
-		if (chargeVal == 2) {ballSpeedNLength = ballSpeedNLength * (1 + (0.166));}
-		if (chargeVal == 3) {ballSpeedNLength = ballSpeedNLength * (1 + (0.333));}
+		if (chargeVal == 2) {ballSpeedNLength = ballSpeedNLength * (1 + (0.166));}	
+		if (chargeVal == 3) {ballSpeedNLength = ballSpeedNLength * (1 + (0.333));}	
 		if (chargeVal >= 4) {ballSpeedNLength = ballSpeedNLength * (1 + (0.5));}
 		if (ballToAlphaLength > ballSpeedNLength &&  ballSpeedNLength  >= 0) {
 			double downFactor = ballSpeedNLength / ballToAlphaLength;

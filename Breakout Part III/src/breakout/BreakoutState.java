@@ -94,13 +94,15 @@ public class BreakoutState {
 	 * @post | getPaddle().equals(paddle)
 	 * 
 	 *
-	 * @post | Arrays.stream(balls).allMatch(b1 -> Arrays.stream(getBalls()).allMatch(b2 -> (b2.getVelocity() == b1.getVelocity())
+	 * @post | Arrays.stream(balls).allMatch(b1 -> Arrays.stream(getBalls()).allMatch(b2 -> (b2.getVelocity().equals(b1.getVelocity()))
 	 * 		 |													&&  (b2.getEcharge() == b1.getEcharge()) 
-	 * 		 |													&&  (b2.getLocation() == b1.getLocation())))
+	 * 		 |													&&  (b2.getLocation().getCenter().equals(b1.getLocation().getCenter()))
+	 * 		 |													&&  (b2.getLocation().getDiameter() == (b1.getLocation().getDiameter())) ))  
 	 * 
 	 * @post | Arrays.stream(alphas).allMatch(b1 -> Arrays.stream(getAlphas()).allMatch(b2 -> (b2.getVelocity() == b1.getVelocity())
 	 * 		 |													&&  (b2.getEcharge() == b1.getEcharge()) 
-	 * 		 |													&&  (b2.getLocation() == b1.getLocation())))
+	 * 		 |													&&  (b2.getLocation().getCenter().equals(b1.getLocation().getCenter()))
+	 * 		 |													&&  (b2.getLocation().getDiameter() == (b1.getLocation().getDiameter())) )) 
 	 * 
 	 * 
 	 */
@@ -127,15 +129,13 @@ public class BreakoutState {
 		if (!Arrays.stream(alphas).allMatch(b -> getFieldInternal().contains(b.getLocation())))
 			throw new IllegalArgumentException();
 
-		// Constructor makes deepClone of both balls, and alphas, to avoid represetationObject exposure
-		this.balls = new Ball[balls.length];
-		for(int i = 0; i < balls.length; ++i) {
-			this.balls[i] = balls[i].deepClone();
-		}
-		this.alphas = new Alpha[alphas.length];
-		for(int i = 0; i < alphas.length; ++i) {
-			this.alphas[i] = alphas[i].deepClone();
-		}
+		// balls.clone() does a shallow copy by default
+		this.balls = balls;
+		
+		
+		// balls.clone() does a shallow copy by default
+		this.alphas = alphas;
+		
 		
 		this.blocks = blocks.clone();
 		this.paddle = paddle;
@@ -156,11 +156,26 @@ public class BreakoutState {
 	 * 
 	 */
 	public Ball[] getBalls() {
-		Ball[] res = new Ball[balls.length];
-		for (int i = 0 ; i < balls.length ; ++i) {
-			res[i] = balls[i].deepClone();
+		
+		Alpha[] clonedAlphas = new Alpha[alphas.length];
+		Ball[] clonedBalls = new Ball[balls.length];
+		for (int i = 0; i < balls.length; i++) {
+			clonedBalls[i] = balls[i].shallowClone();
 		}
-		return res; 
+		for (int i = 0; i < alphas.length; i++) {
+			clonedAlphas[i] = alphas[i].shallowClone();
+		}
+		
+		for (int i = 0; i < balls.length; i++) {
+			for (Alpha alpha: balls[i].getLinkedAlphas()) {
+				for (int j = 0; j < alphas.length; j++) {
+					if (alpha == alphas[j]) {
+						clonedBalls[i].linkTo(clonedAlphas[j]);
+					}
+				}
+			}
+		}
+		return clonedBalls;
 	}
 	/**
 	 * Returns a deepclone of the alphas of this BreakoutState.
@@ -171,11 +186,26 @@ public class BreakoutState {
 	 * 
 	 */
 	public Alpha[] getAlphas() {
-		Alpha[] res = new Alpha[alphas.length];
-		for (int i = 0 ; i < alphas.length; ++i) {
-			res[i] = alphas[i].deepClone();
+		
+		Alpha[] clonedAlphas = new Alpha[alphas.length];
+		Ball[] clonedBalls = new Ball[balls.length];
+		for (int i = 0; i < balls.length; i++) {
+			clonedBalls[i] = balls[i].shallowClone();
 		}
-		return res; 
+		for (int i = 0; i < alphas.length; i++) {
+			clonedAlphas[i] = alphas[i].shallowClone();
+		}
+		
+		for (int i = 0; i < balls.length; i++) {
+			for (Alpha alpha: balls[i].getLinkedAlphas()) {
+				for (int j = 0; j < alphas.length; j++) {
+					if (alpha == alphas[j]) {
+						clonedBalls[i].linkTo(clonedAlphas[j]);
+					}
+				}
+			}
+		}
+		return clonedAlphas;
 	}
 
 //		if (balls.length==0) {

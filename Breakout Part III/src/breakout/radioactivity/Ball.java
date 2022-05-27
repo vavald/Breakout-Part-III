@@ -276,31 +276,6 @@ public abstract class Ball {
 	}
 	
 	
-	/**
-	 * Return a clone of this BallState.
-	 * 
-	 * @inspects this
-	 * @creates result
-//     * @post | result.getEcharge() == getEcharge()
-	 * @post | result.getLocation().equals(getLocation())
-	 * @post | result.getVelocity().equals(getVelocity())
-	 * 
-	 * Is a deep clone
-	 * @post result and this are linked to alphas with same velocity, location and echarge
-	 * 		 | (getLinkedAlphas().size() == 0) || getLinkedAlphas().stream().allMatch(a1 -> result.getLinkedAlphas().stream().anyMatch(a2 -> (a2.getVelocity() == a1.getVelocity())
-	 * 		 |													&&  (a2.getEcharge() == a1.getEcharge())))
-	 * @post | getLinkedAlphas().size() == result.getLinkedAlphas().size()
-	 */
-	public Ball deepClone() {
-		Ball res = shallowClone();
-		for (Alpha alpha: getLinkedAlphas()) {
-			Alpha a = alpha.shallowClone();
-			res.linkTo(a);
-			
-		}
-		return res;
-	}
-	
 	
 	/**
 	 * 

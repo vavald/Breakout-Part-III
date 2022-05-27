@@ -56,30 +56,6 @@ class LinksTest {
 		b3.linkTo(a4);
 		assertEquals(b2.getEcharge(), 2);
 		
-		//Test links when cloning alpha
-		Alpha a4Clone = a4.deepClone();
-		System.out.print(a4Clone.getLinkedBalls());
-		assertEquals(a4Clone.getLinkedBalls().size(), 2);
-
-//		assertEquals((a4Clone.getLinkedBalls().stream().map(b -> b.getEcharge()).collect(Collectors.toSet())),
-//				new HashSet<>(Arrays.asList(2, -2)));
-		
-		assertTrue(a4Clone.getLinkedBalls().stream().anyMatch(b -> 
-							b.getVelocity().equals(b2.getVelocity())));
-		
-		assertEquals((a4.getLinkedBalls().stream().map(b -> b.getEcharge()).collect(Collectors.toSet())),
-				new HashSet<>(Arrays.asList(2, -2)));
-		
-
-		
-		
-		Ball b2Clone = b2.deepClone();
-//		assertEquals((b2.getLinkedAlphas().stream().map(b -> b.getLinkedBalls().size()).collect(Collectors.toSet())),
-//				"nonce");
-		assertEquals(b2Clone.getLinkedAlphas().size(), 2);
-		assertEquals((b2Clone.getLinkedAlphas().stream().map(b -> b.getLinkedBalls().size()).collect(Collectors.toSet())),
-				"nonce");
-		
 	}
 
 }

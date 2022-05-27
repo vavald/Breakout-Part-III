@@ -149,40 +149,31 @@ public class Alpha {
 	 * @pre | collidesWith(rect)
 	 * @post | getLocation().equals(old(getLocation()))
 	 * 
-//	 *@post Velocity of linked balls gets updated with static, magnet fonction
-//	 * 		| getLinkedBalls().stream().allMatch(b1 -> old(getLinkedBalls()).stream().anyMatch(b -> b1.getVelocity().equals( 
-//	 * 		| 				Vector.magnetSpeed(old(getCenter()), b.getCenter(), b.getEcharge(), b.getVelocity()))))
-	 * 
-//	 * @post | true == getLinkedBalls().stream().allMatch(b1 -> old(getLinkedBalls()).stream().anyMatch(b -> 
-//	 * 		 | 		b1.getVelocity().equals( Vector.magnetSpeed(old(getCenter()), b.getCenter(), b.getEcharge(), b.getVelocity())) &&
-//	 * 		 |						print(Vector.magnetSpeed(old(getCenter()), b.getCenter(), b.getEcharge(), b.getVelocity()))	))
-//	 * 		 |		  
+	 * @post | getLinkedBalls().stream().noneMatch(b1 -> old(getLinkedBalls()).stream().noneMatch(b -> 
+	 * 		 | 		b1.getVelocity().equals( b.getVelocity()) ))  
 	 * 
 	 * @mutates_properties velocity of balls linked with this alpha changes
 	 * 		| (...getLinkedBalls()).getVelocity()
 	 */
 	
 	public void hitWall(Rect rect) {
-		System.out.print("\n----------------Hitwall---------------------");
-//		Alpha clone = this.deepClone();
-//		Point oldGetCenter = getCenter();
-		System.out.print("\nvelocity of old balls: " + Arrays.toString((getLinkedBalls().stream().map(b -> b.getVelocity()).toArray())));
-//		System.out.print("\nvelocity of old balls + magnetism: " + Arrays.toString((getLinkedBalls().stream().map(b 
-//		-> (Vector.magnetSpeed(getCenter(), b.getCenter(), b.getEcharge(), b.getVelocity()))).toArray())));
+
 
 		velocity = bounceOn(rect);
-//		Set<Ball> oldGetLinkedBalls = getLinkedBalls()
-//		Point oldGetCenter = getCenter();
 		for(Ball ball: getLinkedBalls()) {
 			Vector nspeed = Vector.magnetSpeed(this.getCenter(), ball.getCenter(), ball.getEcharge(), ball.getVelocity());
+			System.out.print("velocity before: " + nspeed);
 			ball.setVelocity(nspeed);
+			System.out.print("velocity after: " +ball.getVelocity());
 		
-//		 
+			System.out.print("\nvelocity of new balls: " + Arrays.toString((getLinkedBalls().stream().map(b -> b.getVelocity()).toArray())));	 
 		
 		  System.out.print("\n--------------------------------------------");
 		
 		}
 		
+		
+	
 		
 	}
 	
@@ -257,37 +248,6 @@ public class Alpha {
 	public Alpha shallowClone() {
 		return cloneWithVelocity(getVelocity());
 	}
-	
-	/**
-	 * Return a clone of this Alpha.
-	 * 
-	 * @inspects this
-	 * @creates result
-	 * @post | result.getLocation().equals(getLocation())
-	 * @post | result.getVelocity().equals(getVelocity())
-	 * 
-	 * Is a deep clone
-	 * @post result and this are linked to alphas with same velocity, location and echarge
-	 * 		 | (getLinkedBalls().size() == 0) || (
-	 * 		 |	getLinkedBalls().stream().allMatch(b1 -> result.getLinkedBalls().stream().anyMatch(b2 -> (b2.getVelocity().equals(b1.getVelocity()))
-	 * 		 |											&& (b2.getLocation().getCenter().equals(b1.getLocation().getCenter()))		
-	 * 		 | 													)))
-	 * 		 |
-	 * @post | getLinkedBalls().size() == result.getLinkedBalls().size()
-	 */
-	public Alpha deepClone() {
-//		System.out.print(getLinkedBalls());
-		Alpha res = shallowClone();
-		for (Ball ball: getLinkedBalls()) {
-			Ball cBall = ball.deepClone();
-//			cBall.updateEcharge();
-			cBall.linkTo(res);
-//		System.out.print(res.getLinkedBalls());
-		}
-		return res;
-	}
-
-	
     
 }
 	
