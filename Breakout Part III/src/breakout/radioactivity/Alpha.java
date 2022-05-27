@@ -33,7 +33,7 @@ public class Alpha {
      * @represenationObject
      * @peerObjects
      */
-    HashSet<Ball> linkedBalls = new HashSet<>();
+    Set<Ball> linkedBalls = new HashSet<>();
     /**
      * @post | result != null
      * 

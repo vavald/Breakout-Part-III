@@ -44,7 +44,7 @@ public abstract class Ball {
      * @representationObject
      * @peerObjects
      */
-    HashSet<Alpha> linkedAlphas = new HashSet<>();
+    Set<Alpha> linkedAlphas = new HashSet<Alpha>();
     
     /**
      * @post | result != null
